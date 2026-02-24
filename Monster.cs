@@ -44,9 +44,9 @@ public class Monster
 
     // Optional: Weapon weapon for monsters using weapons.
     // weapon.maximumDamage is key
-    public void DealDamageToPlayer(double damage)
+    public void DealDamageToPlayer(Player target)
     {
         bool isCritical = random.Next(2) == 0;
-        Player.TakeDamage(damage, isCritical);
+        target.TakeDamage(MaximumDamage, isCritical);
     }
 }
