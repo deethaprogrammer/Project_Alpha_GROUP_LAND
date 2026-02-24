@@ -14,7 +14,7 @@ public class Player
     };
     public readonly Random RNG = new();
     private const string _line = "---------------------------------------------------------------------------------------------------";
-    public Player(string name, Weapon currentWeapon, Location currentLocation)
+    public Player(string name, Weapon currentWeapon)
     {
         Name = name;
         ResetStats();
@@ -33,17 +33,20 @@ public class Player
         CurrentHitPoints = (hpLeft >= 0) ? hpLeft : 0;
         PrintStats();
         PrintCriticalHit(isCritical);
-        Console.WriteLine($"{Name} took {damageTaken} damage!");
+        Console.WriteLine($"{Name} took {Math.Round(damageTaken, 1)} damage!");
         if (PlayerDied()) { GameOver(); }
     }
-    public void DealDamageToMonster(double damage, Monster monster)
-    {
-        bool isCritical = RNG.Next(2) == 0;
-        monster.TakeDamage(damage, isCritical);
-        PrintStats();
-        PrintCriticalHit(isCritical);
-        Console.WriteLine($"{monster.Name} dealt {(int) damage} damage to {this.Name}!");
-    }
+    // probably don't need this
+
+    // public void DealDamageToMonster(double damage, Monster monster)
+    // {
+    //     bool isCritical = RNG.Next(2) == 0;
+    //     monster.TakeDamage(damage, isCritical);
+    //     PrintStats();
+    //     PrintCriticalHit(isCritical);
+    //     Console.WriteLine($"{monster.Name} dealt {(int) damage} damage to {this.Name}!");
+    // }
+
     public void Defend()
     {
         int magicIncrease = RNG.Next(1, 11) * 5;
@@ -66,7 +69,7 @@ public class Player
     {
         Console.WriteLine($"{Name} has no more HP to continue on.\nGame Over!\nWould you like to continue?");
         string? prompt = Console.ReadLine();
-        if (string.IsNullOrEmpty(prompt)) { prompt = ""; }
+        if (string.IsNullOrEmpty(prompt)) { prompt = "No"; }
         if (prompt.ToUpper()[0] == 'Y') { ResetStats(); }
         else { Environment.Exit(0); }
     }
@@ -75,6 +78,7 @@ public class Player
         CurrentLocation = World.LocationByID(1);
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
+        RemoveRandomItem(); // Remove random Weapon in Inventory when losing
     }
     // Inventory Management
     public bool ItemInInventory(Weapon findWeapon) => Inventory["Inventory"].Contains(findWeapon.ID);
@@ -107,6 +111,12 @@ public class Player
     {
         MoveItem(weapon);
         CurrentWeapon = null;
+    }
+    public void RemoveRandomItem()
+    {
+        int randomItemID = Inventory["Inventory"][RNG.Next(Inventory["Inventory"].Count) - 1];
+        Inventory["Inventory"].Remove(randomItemID);
+        Console.WriteLine($"You lost the {World.WeaponByID(randomItemID)} Weapon from your inventory!");
     }
     // Print Info of Player Instance
     public void PrintCriticalHit(bool isCritical)
