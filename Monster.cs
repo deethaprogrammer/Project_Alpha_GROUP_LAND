@@ -2,10 +2,10 @@ public class Monster
 {
     public readonly int ID;
     public string Name;
-    public int MaximumDamage;
-    public int CurrentHitPoints;
-    public int MaximumHitPoints;
-    public Monster(int id, string name, int maximumDamage, int currentHitPoints, int maximumHitPoints)
+    public double MaximumDamage;
+    public double CurrentHitPoints;
+    public double MaximumHitPoints;
+    public Monster(int id, string name, double maximumDamage, double currentHitPoints, double maximumHitPoints)
     {
         ID = id;
         Name = name;
@@ -13,4 +13,23 @@ public class Monster
         CurrentHitPoints = currentHitPoints;
         MaximumHitPoints = maximumHitPoints;
     }
+    
+    public void TakeDamage(double damage, bool critical)
+    {
+        if (critical)
+        {
+            this.CurrentHitPoints -= damage * 1.5;
+        } 
+        else
+        {
+            this.CurrentHitPoints -= damage;
+        }
+    }
+
+    public string ReturnHealth()
+    {
+        return $"{CurrentHitPoints} / {MaximumHitPoints}";
+    }
+
+    
 }

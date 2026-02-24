@@ -13,4 +13,21 @@ public class Player
         CurrentWeapon = currentWeapon;
         CurrentLocation = currentLocation;
     }
+    public void PrintStats() // Use when starting a battle, since it clears console
+    {
+        List<string> stats = [
+            $"Health: {CurrentHitPoints}/{MaximumHitPoints}",
+            $"Current Weapon: {CurrentWeapon.Name}",
+            $"Current Location: {CurrentLocation.Name}"
+            ];
+        Console.Clear();
+        for (int i = 0; i < stats.Count; i++)
+        {
+            string stat = stats[i];
+            int newSpot = Console.WindowWidth - stat.Length;
+            Console.SetCursorPosition(newSpot, i);
+            Console.Write(stat);
+        }
+        Console.SetCursorPosition(0, Console.CursorTop + stats.Count);
+    }
 }

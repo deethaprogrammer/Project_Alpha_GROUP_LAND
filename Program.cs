@@ -2,13 +2,9 @@
 {
     static void Main(string[] args)
     {
-        // Monster monster = new();
-        // Console.WriteLine(monster);
-        // Location location = new();
-        // Console.WriteLine(location);
-        // Player player = new();
-        // Console.WriteLine(player);
-        // Quest quest = new();
-        // Console.WriteLine(quest);
+        Console.WriteLine("Start.\n\nWhat is your player name?");
+        string PlayerName = Console.ReadLine();
+        Player player = new(PlayerName, 50, 50, World.Weapons[0], World.Locations[0]);
+        player.PrintStats();
     }
 }
