@@ -10,6 +10,5 @@
         // Console.WriteLine(player);
         // Quest quest = new();
         // Console.WriteLine(quest);
-        // World.World();
     }
 }
