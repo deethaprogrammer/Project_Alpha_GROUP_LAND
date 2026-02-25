@@ -35,17 +35,6 @@ public class Player
         Console.WriteLine($"{monster.Name} dealt {Math.Round(damageTaken, 1)} damage to {Name}!");
         if (PlayerDied()) { GameOver(); }
     }
-    // probably don't need this
-
-    // public void DealDamageToMonster(double damage, Monster monster)
-    // {
-    //     bool isCritical = RNG.Next(2) == 0;
-    //     monster.TakeDamage(damage, isCritical);
-    //     PrintStats();
-    //     PrintCriticalHit(isCritical);
-    //     Console.WriteLine($"{monster.Name} dealt {(int) damage} damage to {this.Name}!");
-    // }
-
     public void Defend()
     {
         int magicIncrease = RNG.Next(1, 11) * 5;
@@ -110,6 +99,18 @@ public class Player
     {
         MoveItem(weapon);
         CurrentWeapon = null;
+    }
+    public string ViewItemsInInventory(string inventoryType) // Views inventory items with specifying string as parameter
+    {
+        List<string> options = ["Inventory", "Equipment"];
+        if (!options.Contains(inventoryType)) { throw new ArgumentException("Invalid InventoryType"); }
+        string start = $"Items in {inventoryType}:\n";
+        foreach (int id in Inventory[inventoryType])
+        {
+            start += $"{id}. {World.WeaponByID(id).Name}\n";
+        }
+        if (Inventory[inventoryType].Count == 0) { start += "None"; }
+        return start;
     }
     public void RemoveRandomItem()
     {
