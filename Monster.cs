@@ -47,6 +47,6 @@ public class Monster
     public void DealDamageToPlayer(Player target)
     {
         bool isCritical = random.Next(2) == 0;
-        target.TakeDamage(MaximumDamage, isCritical);
+        target.TakeDamage(MaximumDamage, this, isCritical);
     }
 }
