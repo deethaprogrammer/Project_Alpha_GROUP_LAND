@@ -13,7 +13,6 @@ public class Player
         {"Equipment", []}
     };
     public readonly Random RNG = new();
-    private const string _line = "---------------------------------------------------------------------------------------------------";
     public Player(string name, Weapon currentWeapon, Location currentLocation)
     {
         Name = name;
@@ -73,6 +72,7 @@ public class Player
         if (prompt.ToUpper()[0] == 'Y') { ResetStats(); }
         else { Environment.Exit(0); }
     }
+    public void Rest() => CurrentHitPoints = MaximumHitPoints;
     public void ResetStats()
     {
         CurrentLocation = World.LocationByID(1);
@@ -138,6 +138,6 @@ public class Player
             Console.Write(stat);
         }
         Console.SetCursorPosition(0, Console.CursorTop + 1);
-        Console.WriteLine(_line);
+        Console.WriteLine();
     }
 }
