@@ -27,13 +27,13 @@ public class Monster
 
         if (isCritical)
         {
-            this.CurrentHitPoints -= adjustedDamage * 1.5;
-            Console.WriteLine($"{Name} took {adjustedDamage * 1.5} damage! {ReturnHealth()}");
+            this.CurrentHitPoints -= Math.Round(adjustedDamage * 1.5, 1);
+            Console.WriteLine($"{Name} took {Math.Round(adjustedDamage * 1.5, 1)} damage! {ReturnHealth()}");
         } 
         else
         {
-            this.CurrentHitPoints -= adjustedDamage;
-            Console.WriteLine($"{Name} took {adjustedDamage} damage! {ReturnHealth()}");
+            this.CurrentHitPoints -= Math.Round(adjustedDamage, 1);
+            Console.WriteLine($"{Name} took {Math.Round(adjustedDamage, 1)} damage! {ReturnHealth()}");
         }
     }
 
