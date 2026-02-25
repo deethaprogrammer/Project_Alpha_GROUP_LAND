@@ -1,4 +1,6 @@
-﻿public static class Program
+﻿using System.Runtime.InteropServices;
+
+public static class Program
 {
     static void Main(string[] args)
     {
@@ -9,5 +11,7 @@
         Player player = new(PlayerName, World.Weapons[0], World.Locations[0]);
         player.PrintStats();
         player.CurrentLocation.PrintMap(player);
+        Console.Clear();
+        player.CurrentLocation.Move(player);
     }
 }

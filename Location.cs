@@ -9,7 +9,7 @@ public class Location
     public Quest QuestAvailableHere;
     public Monster MonsterLivingHere;
     public Location LocationToNorth, LocationToEast, LocationToSouth, LocationToWest;
-    
+
     public Player player;
 
     public char LegendName;
@@ -89,9 +89,10 @@ public class Location
 
     public Location Move(Player player)
     {
+        PrintMap(player);
         while (true)
         {
-            Console.WriteLine("Press:\n[N]: To go Up (North)\n[E]: To go Right (East)\n[S]: To go Down (South)\n[W]: To go Left (West)\n[R]: Return I don't want to move.\nYou can use upper or lower to answer");
+            Console.WriteLine("Press:\n[N]: To go Up (North)\n[E]: To go Right (East)\n[S]: To go Down (South)\n[W]: To go Left (West)\n[R]: Return I don't want to move.\nYou can use upper or lower to answer \n(The input will be recognized so you don't need to press enter after)");
             ConsoleKey key = Console.ReadKey(true).Key;
 
             Location? moving = key switch
@@ -109,7 +110,6 @@ public class Location
             }
             Console.Clear();
             Console.WriteLine("This is not a valid movement");
-            PrintMap(player);
         }
 
 
