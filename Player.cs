@@ -1,8 +1,8 @@
 public class Player
 {
     public string Name;
-    public double CurrentHitPoints;
-    public int CurrentMagicPoints;
+    public double CurrentHitPoints = 30.0;
+    public int CurrentMagicPoints = 150;
     public const double MaximumHitPoints = 30.0;
     public const int MaximumMagicPoints = 150;
     public Weapon CurrentWeapon;
@@ -14,14 +14,14 @@ public class Player
     };
     public readonly Random RNG = new();
     private const string _line = "---------------------------------------------------------------------------------------------------";
-    public Player(string name, Weapon currentWeapon)
+    public Player(string name, Weapon currentWeapon, Location currentlocation)
     {
         Name = name;
-        ResetStats();
         CurrentWeapon = currentWeapon;
+        CurrentLocation = currentlocation;
     }
-    // Location Management
-    public void MoveToLocation(Location location) => CurrentLocation = location;
+
+
     // Combat
     public void TakeDamage(double damage, bool isCritical = false)
     {

@@ -9,6 +9,8 @@ public class Location
     public Quest QuestAvailableHere;
     public Monster MonsterLivingHere;
     public Location LocationToNorth, LocationToEast, LocationToSouth, LocationToWest;
+    
+    public Player player;
 
     public char LegendName;
     /* 
@@ -77,14 +79,15 @@ public class Location
         }
 
     }
-    public void PrintMap()
+    public void PrintMap(Player player)
     {
+        player.PrintStats();
         drawLegend();
         drawLocations();
         Console.SetCursorPosition(0, 14);
     }
 
-    public Location Move()
+    public Location Move(Player player)
     {
         while (true)
         {
@@ -106,7 +109,7 @@ public class Location
             }
             Console.Clear();
             Console.WriteLine("This is not a valid movement");
-            PrintMap();
+            PrintMap(player);
         }
 
 
