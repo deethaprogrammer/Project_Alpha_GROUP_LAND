@@ -5,11 +5,11 @@ public class Player
     public int CurrentMagicPoints;
     public const double MaximumHitPoints = 30.0;
     public const int MaximumMagicPoints = 150;
-    public Weapon CurrentWeapon;
+    public Weapon? CurrentWeapon;
     public Location CurrentLocation;
     public Inventory Inventory;
     public readonly Random RNG = new();
-    public Player(string name, Weapon currentWeapon, Location currentLocation)
+    public Player(string name, Weapon? currentWeapon, Location currentLocation)
     {
         Name = name;
         CurrentLocation = currentLocation;
@@ -73,10 +73,11 @@ public class Player
     }
     public void PrintStats()
     {
+        string currentWeaponName = (CurrentWeapon is null) ? "None" : CurrentWeapon.Name;
         List<string> stats = [
             $"Health: {CurrentHitPoints}/{MaximumHitPoints}",
             $"Magic Points: {CurrentMagicPoints}/{MaximumMagicPoints}",
-            $"Current Weapon: {CurrentWeapon.Name}",
+            $"Current Weapon: {currentWeaponName}",
             $"Current Location: {CurrentLocation.Name}",
             ];
         for (int i = 0; i < stats.Count; i++)
