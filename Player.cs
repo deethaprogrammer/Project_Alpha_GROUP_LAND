@@ -14,16 +14,16 @@ public class Player
     };
     public readonly Random RNG = new();
     private const string _line = "---------------------------------------------------------------------------------------------------";
-    public Player(string name, Weapon currentWeapon)
+    public Player(string name, Weapon currentWeapon, Location currentLocation)
     {
         Name = name;
-        ResetStats();
+        CurrentLocation = currentLocation;
+        CurrentHitPoints = MaximumHitPoints;
+        CurrentMagicPoints = 0;
         CurrentWeapon = currentWeapon;
     }
-    // Location Management
-    public void MoveToLocation(Location location) => CurrentLocation = location;
     // Combat
-    public void TakeDamage(double damage, bool isCritical = false)
+    public void TakeDamage(double damage, Monster monster, bool isCritical = false)
     {
         damage = isCritical ? damage : damage * 1.5;
         int defenseRatio = RNG.Next(1, 6); // 1 = 100% damage, 5 = 60% damage
@@ -33,7 +33,7 @@ public class Player
         CurrentHitPoints = (hpLeft >= 0) ? hpLeft : 0;
         PrintStats();
         PrintCriticalHit(isCritical);
-        Console.WriteLine($"{Name} took {Math.Round(damageTaken, 1)} damage!");
+        Console.WriteLine($"{monster.Name} dealt {Math.Round(damageTaken, 1)} damage to {Name}!");
         if (PlayerDied()) { GameOver(); }
     }
     // probably don't need this
@@ -100,7 +100,6 @@ public class Player
         }
         fromList.Remove(item.ID);
         toList.Add(item.ID);
-        
     }
     public void EquipWeapon(Weapon newWeapon)
     {
