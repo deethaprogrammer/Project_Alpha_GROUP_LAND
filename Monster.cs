@@ -5,18 +5,17 @@ public class Monster
     public double MaximumDamage;
     public double CurrentHitPoints;
     public double MaximumHitPoints;
-    public bool IsAlive;
+    public bool IsAlive = true;
 
     private Random random = new Random();
 
-    public Monster(int id, string name, double maximumDamage, double currentHitPoints, double maximumHitPoints, bool isAlive)
+    public Monster(int id, string name, double maximumDamage, double currentHitPoints, double maximumHitPoints)
     {
         ID = id;
         Name = name;
         MaximumDamage = maximumDamage;
         CurrentHitPoints = currentHitPoints;
         MaximumHitPoints = maximumHitPoints;
-        IsAlive = isAlive;
     }
     
     public void TakeDamage(double damage, bool isCritical)
