@@ -95,6 +95,23 @@ public class Location
             Console.WriteLine("There is a Quest that you can do");
             return QuestAvailableHere;
         }
+        else if (QuestAvailableHere != null && QuestAvailableHere.IsCompleted && QuestAvailableHere.NextQuest.IsStarted)
+        {
+            do
+            {
+                Console.WriteLine($"Do you want to receive your reward?\nYou will get a {QuestAvailableHere.NextQuest.RewardWeapon.Name} (y/n)");
+                string answered = Console.ReadLine().ToLower();
+                if (answered == "y")
+                {
+                    QuestAvailableHere.NextQuest.IsStarted = false;
+                    QuestAvailableHere.NextQuest.IsCompleted = true;
+                    player.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon);
+                    break;
+                }
+            } while (true);
+
+
+        }
         else if (QuestAvailableHere != null && (QuestAvailableHere.IsCompleted || player.GetStartedQuest() != null))
         {
             Console.WriteLine(QuestAvailableHere.IsStarted ? "You are currently in a Quest." : "You have already finished this Quest.");

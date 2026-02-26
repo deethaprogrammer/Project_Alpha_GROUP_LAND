@@ -1,15 +1,3 @@
-// As a player I want to gain rewards when finishing a
-// quest so that I can use
-// these rewards later in the game
-// When a quest is completed then the player
-// receives better equipment
-// The reward is added to the inventory of the player
-// The reward can be equipped manually by the player,
-// no automatic equipping.
-
-using System.Formats.Asn1;
-using System.Security.Cryptography;
-
 public class Quest
 {
     public readonly int ID;
@@ -20,14 +8,17 @@ public class Quest
     public bool IsStarted;
     public int KillsNeeded = 3;
     public int CurrentKills;
+    public bool ClaimedReward;
+    public Quest NextQuest;
 
-    public Quest(int id, string name, string description, Weapon rewardWeapon = null)
+    public Quest(int id, string name, string description, Weapon rewardWeapon = null, Quest nexquest = null)
     {
         ID = id;
         Name = name;
         Description = description;
         RewardWeapon = rewardWeapon;
         IsCompleted = false;
+        NextQuest = nexquest;
     }
 
     public void CompleteQuest()
@@ -164,10 +155,13 @@ public class Quest
                     }
 
                 } while (target.CurrentHitPoints > 0 && player.CurrentHitPoints > 0);
-                Console.WriteLine("Do you want to continue fighting or will you be back later? y / n (press y or n after that press enter)");
-                if (Continue() != true)
+                if (CurrentKills < KillsNeeded - 1 && target.CurrentHitPoints == 0)
                 {
-                    return;
+                    Console.WriteLine("Do you want to continue fighting or will you be back later? y / n (press y or n after that press enter)");
+                    if (Continue() != true)
+                    {
+                        return;
+                    }
                 }
                 target.CurrentHitPoints = target.MaximumHitPoints;
             }
@@ -176,6 +170,9 @@ public class Quest
                 CompleteQuest();
                 IsStarted = false;
                 CurrentKills = 0;
+                Console.WriteLine("Two new messages:\n- A new area opened up\n- Return to the Quest giver in order to claim your reward\nPress enter if you have seen the message");
+                Console.ReadLine();
+                this.NextQuest.IsStarted = true;
                 switch (ID)
                 {
                     case 1:
@@ -189,18 +186,11 @@ public class Quest
         }
     }
 
-    // When the player enters a location with a quest,
-    // ask the user if he wants to start the quest or not
-    // If the player does not want to start the quest,
-    // then prompt the options once more for that area
-    // If the player starts the quest then multiple
-    // fight scenes will activate until the player is
-    // successful
-    // If the player finished the quest then that
-    // quest will be marked as completed in their stats
-    // When a quest is completed the player will be
-    // notified if any new locations have been unlocked.
 
+    public void receiveReward(Player player)
+    {
+        
+    }
     public void StartQuest(Player player)
     {
         Console.WriteLine($"Quest: {Name}");
@@ -215,54 +205,6 @@ public class Quest
             Console.WriteLine(Description);
             IsStarted = true;
 
-
-            // if (targetMonster != null)
-            // {
-            //     Console.WriteLine($"A wild {targetMonster.Name} appears!");
-
-            //     while (targetMonster.CurrentHitPoints > 0 && player.CurrentHitPoints > 0)
-            //     {
-            //         Console.WriteLine($"{targetMonster.Name} HP: {targetMonster.ReturnHealth()}");
-
-            //         Console.WriteLine("Press enter to attack");
-            //         Console.ReadLine();
-
-            //         targetMonster.CurrentHitPoints -= 1;
-            //         Console.WriteLine($"You attacked {targetMonster.Name}");
-
-            //         if (targetMonster.CurrentHitPoints <= 0)
-            //         {
-            //             Console.WriteLine($"You defeated {targetMonster.Name}!");
-            //             break;
-            //         }
-
-            //         if (player.CurrentHitPoints > 0)
-            //         {
-            //             player.CurrentHitPoints -= 1;
-            //             Console.WriteLine($"{targetMonster.Name} attacked you");
-            //         }
-
-            //         if (player.CurrentHitPoints <= 0)
-            //         {
-            //             Console.WriteLine("You lost");
-            //             Console.WriteLine("Quest failed. Try again?");
-            //             string restart = Console.ReadLine().ToLower();
-            //             if (restart == "y" || restart == "yes")
-            //             {
-            //                 targetMonster.CurrentHitPoints = targetMonster.MaximumHitPoints;
-            //                 Console.WriteLine("Restarting quest...");
-            //                 return;
-            //             }
-            //             else if (restart == "n" || restart == "no")
-            //             {
-            //                 IsStarted = false;
-            //                 return;
-            //             }
-            //         }
-            //     }
-
-            // CompleteQuest();
-            // IsStarted = false;
             Console.WriteLine($"Quest completed: {Name}");
 
             if (RewardWeapon != null)
@@ -274,14 +216,5 @@ public class Quest
             Console.WriteLine("New locations have been unlocked");
         }
     }
-    //     else
-    //     {
-    //         Console.WriteLine("Quest declined. You can try again later.");
-    //     }
-    // }
-
-    // Won game
-
-    // To win the game the players needs to finish the quests
     public void WonGame() { }
 }

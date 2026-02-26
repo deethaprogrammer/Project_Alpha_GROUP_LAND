@@ -15,7 +15,9 @@ public static class World
     public const int MONSTER_ID_GIANT_SPIDER = 3;
 
     public const int QUEST_ID_CLEAR_ALCHEMIST_GARDEN = 1;
+    public const int Completion_alchemist = 11;
     public const int QUEST_ID_CLEAR_FARMERS_FIELD = 2;
+    public const int Completion_Farm = 22;
     public const int QUEST_ID_COLLECT_SPIDER_SILK = 3;
 
     public const int LOCATION_ID_HOME = 1;
@@ -61,19 +63,24 @@ public static class World
 
     public static void PopulateQuests()
     {
+        Quest CompleteAlchemist = new Quest(Completion_alchemist, "completed", "return to the alchemist for your reward (alchemistHut)", WeaponByID(WEAPON_ID_CLUB));
         Quest clearAlchemistGarden =
             new Quest(
                 QUEST_ID_CLEAR_ALCHEMIST_GARDEN,
                 "Clear the alchemist's garden",
-                "Kill 3 rats in the alchemist's garden ");
+                "Kill 3 rats in the alchemist's garden ",
+                null,
+                CompleteAlchemist);
 
 
-
+        Quest CompleteFarmer = new Quest(Completion_Farm, "completed", "return to the Farmer for your reward (Farmhouse)");
         Quest clearFarmersField =
             new Quest(
                 QUEST_ID_CLEAR_FARMERS_FIELD,
                 "Clear the farmer's field",
-                "Kill 3 snakes in the farmer's field");
+                "Kill 3 snakes in the farmer's field",
+                null,
+                CompleteFarmer);
 
 
         Quest clearSpidersForest =
@@ -82,10 +89,11 @@ public static class World
                         "Collect spider silk",
                         "Kill 3 spiders in the spider forest");
 
-
         Quests.Add(clearAlchemistGarden);
         Quests.Add(clearFarmersField);
         Quests.Add(clearSpidersForest);
+        Quests.Add(CompleteAlchemist);
+        Quests.Add(CompleteFarmer);
     }
 
     public static void PopulateLocations()
