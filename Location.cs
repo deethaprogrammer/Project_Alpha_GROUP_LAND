@@ -105,7 +105,7 @@ public class Location
                 {
                     QuestAvailableHere.NextQuest.IsStarted = false;
                     QuestAvailableHere.NextQuest.IsCompleted = true;
-                    player.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon);
+                    player.Inventory.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon);
                     break;
                 }
             } while (true);
