@@ -5,6 +5,7 @@ public class Monster
     public double MaximumDamage;
     public double CurrentHitPoints;
     public double MaximumHitPoints;
+    public bool IsAlive = true;
 
     private Random random = new Random();
 

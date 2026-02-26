@@ -7,14 +7,10 @@ public class Player
     public int CurrentMagicPoints;
     public const double MaximumHitPoints = 30.0;
     public const int MaximumMagicPoints = 150;
-    public Weapon CurrentWeapon;
+    public Weapon? CurrentWeapon;
     public Location CurrentLocation;
     public List<Quest> quests;
-    public readonly Dictionary<string, List<int>> Inventory = new()
-    {
-        {"Inventory", []}, 
-        {"Equipment", []}
-    };
+    public Inventory Inventory;
     public readonly Random RNG = new();
     public Player(string name, Weapon currentWeapon, Location currentLocation, List<Quest> quest)
     {
@@ -24,6 +20,7 @@ public class Player
         CurrentMagicPoints = 0;
         CurrentWeapon = currentWeapon;
         quests = quest;
+        Inventory = new(this);
     }
     // Combat
     public void TakeDamage(double damage, Monster monster, bool isCritical)
@@ -40,17 +37,6 @@ public class Player
         Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 1)} damage to {Name}!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
         if (PlayerDied()) { GameOver(); }
     }
-    // probably don't need this
-
-    // public void DealDamageToMonster(double damage, Monster monster)
-    // {
-    //     bool isCritical = RNG.Next(2) == 0;
-    //     monster.TakeDamage(damage, isCritical);
-    //     PrintStats();
-    //     PrintCriticalHit(isCritical);
-    //     Console.WriteLine($"{monster.Name} dealt {(int) damage} damage to {this.Name}!");
-    // }
-
     public void Defend()
     {
         int magicIncrease = RNG.Next(1, 11) * 5;
@@ -83,44 +69,7 @@ public class Player
         CurrentLocation = World.LocationByID(1);
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
-        RemoveRandomItem(); // Remove random Weapon in Inventory when losing
-    }
-    // Inventory Management
-    public bool ItemInInventory(Weapon findWeapon) => Inventory["Inventory"].Contains(findWeapon.ID);
-    public void AddItemToInventory(Weapon newWeapon)
-    {
-        if (!ItemInInventory(newWeapon))
-        { Inventory["Inventory"].Add(newWeapon.ID); }
-        else
-        { Console.WriteLine("Item is already in inventory."); }
-    }
-    public void MoveItem(Weapon item, bool equip = false) // Unequips by default
-    {
-        List<int> fromList = Inventory["Equipment"];
-        List<int> toList = Inventory["Inventory"];
-        if (equip)
-        {
-            fromList = Inventory["Inventory"];
-            toList = Inventory["Equipment"];
-        }
-        fromList.Remove(item.ID);
-        toList.Add(item.ID);
-    }
-    public void EquipWeapon(Weapon newWeapon)
-    {
-        MoveItem(newWeapon, true);
-        CurrentWeapon = newWeapon;
-    }
-    public void UnequipWeapon(Weapon weapon)
-    {
-        MoveItem(weapon);
-        CurrentWeapon = null;
-    }
-    public void RemoveRandomItem()
-    {
-        int randomItemID = Inventory["Inventory"][RNG.Next(Inventory["Inventory"].Count) - 1];
-        Inventory["Inventory"].Remove(randomItemID);
-        Console.WriteLine($"You lost the {World.WeaponByID(randomItemID)} Weapon from your inventory!");
+        Inventory.RemoveRandomItem(); // Remove random Weapon in Inventory when losing
     }
     // Print Info of Player Instance
     public void PrintCriticalHit(bool isCritical)
@@ -140,11 +89,12 @@ public class Player
     }
     public void PrintStats()
     {
+        string currentWeaponName = (CurrentWeapon is null) ? "None" : CurrentWeapon.Name;
         List<string> stats = [
             $"Name: {Name}",
             $"Health: {Math.Round(CurrentHitPoints, 1)}/{MaximumHitPoints}",
             $"Magic Points: {CurrentMagicPoints}/{MaximumMagicPoints}",
-            $"Current Weapon: {CurrentWeapon.Name}",
+            $"Current Weapon: {currentWeaponName}",
             $"Current Location: {CurrentLocation.Name}",
             $"Current Quest: {(GetStartedQuest() != null? GetStartedQuest().Description : "No active Quest")}",
             ];
