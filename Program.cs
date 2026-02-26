@@ -8,10 +8,19 @@ public static class Program
         Console.WriteLine("Start.\n\nWhat is your player name?");
         string PlayerName = Console.ReadLine();
         Console.Clear();
-        Player player = new(PlayerName, World.Weapons[0], World.Locations[0]);
+        Player player = new(PlayerName, World.Weapons[0], World.Locations[0], World.Quests);
         player.PrintStats();
         player.CurrentLocation.PrintMap(player);
-        Console.Clear();
-        player.CurrentLocation.Move(player);
+        do
+        {
+            Console.Clear();
+            int CurLocationId = player.CurrentLocation.ID;
+            Location NewLocation = player.CurrentLocation.Move(player);
+            if (NewLocation.ID == CurLocationId)
+            {
+                break;
+            }
+            player.CurrentLocation = NewLocation;
+        } while (true);
     }
 }

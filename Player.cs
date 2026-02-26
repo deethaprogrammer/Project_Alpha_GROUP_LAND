@@ -7,19 +7,21 @@ public class Player
     public const int MaximumMagicPoints = 150;
     public Weapon CurrentWeapon;
     public Location CurrentLocation;
+    public List<Quest> quests;
     public readonly Dictionary<string, List<int>> Inventory = new()
     {
         {"Inventory", []}, 
         {"Equipment", []}
     };
     public readonly Random RNG = new();
-    public Player(string name, Weapon currentWeapon, Location currentLocation)
+    public Player(string name, Weapon currentWeapon, Location currentLocation, List<Quest> quest)
     {
         Name = name;
         CurrentLocation = currentLocation;
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
         CurrentWeapon = currentWeapon;
+        quests = quest;
     }
     // Combat
     public void TakeDamage(double damage, Monster monster, bool isCritical)
@@ -125,6 +127,7 @@ public class Player
     public void PrintStats()
     {
         List<string> stats = [
+            $"Name: {Name}",
             $"Health: {CurrentHitPoints}/{MaximumHitPoints}",
             $"Magic Points: {CurrentMagicPoints}/{MaximumMagicPoints}",
             $"Current Weapon: {CurrentWeapon.Name}",

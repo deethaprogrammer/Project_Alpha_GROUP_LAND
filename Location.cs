@@ -11,6 +11,7 @@ public class Location
     public Location LocationToNorth, LocationToEast, LocationToSouth, LocationToWest;
 
     public Player player;
+    public bool Locked;
 
     public char LegendName;
     /* 
@@ -53,14 +54,14 @@ public class Location
             Console.WriteLine(LocationToNorth.LegendName);
 
             Console.SetCursorPosition(x + 3, 2);
-            Console.WriteLine("|");
+            Console.WriteLine(LocationToNorth.Locked? "'x'" : "|");
 
         }
 
         if (LocationToEast != null)
         {
             Console.SetCursorPosition(x + 5, 3);
-            Console.WriteLine("-" + LocationToEast.LegendName);
+            Console.WriteLine((LocationToEast.Locked? "'x'" : "-") + LocationToEast.LegendName);
         }
 
         if (LocationToSouth != null)
@@ -69,13 +70,13 @@ public class Location
             Console.WriteLine(LocationToSouth.LegendName);
 
             Console.SetCursorPosition(x + 3, 4);
-            Console.WriteLine("|");
+            Console.WriteLine(LocationToSouth.Locked? "'x'" : "|");
         }
 
         if (LocationToWest != null)
         {
             Console.SetCursorPosition(x, 3);
-            Console.WriteLine(LocationToWest.LegendName + "-");
+            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked? "'x'" : "-"));
         }
 
     }
@@ -89,18 +90,18 @@ public class Location
 
     public Location Move(Player player)
     {
-        PrintMap(player);
         while (true)
         {
+            PrintMap(player);
             Console.WriteLine("Press:\n[N]: To go Up (North)\n[E]: To go Right (East)\n[S]: To go Down (South)\n[W]: To go Left (West)\n[R]: Return I don't want to move.\nYou can use upper or lower to answer \n(The input will be recognized so you don't need to press enter after)");
             ConsoleKey key = Console.ReadKey(true).Key;
 
             Location? moving = key switch
             {
-                ConsoleKey.N => LocationToNorth,
-                ConsoleKey.E => LocationToEast,
-                ConsoleKey.S => LocationToSouth,
-                ConsoleKey.W => LocationToWest,
+                ConsoleKey.N when LocationToNorth != null && !LocationToNorth.Locked => LocationToNorth,
+                ConsoleKey.E when LocationToEast != null && !LocationToEast.Locked => LocationToEast,
+                ConsoleKey.S when LocationToSouth != null && !LocationToSouth.Locked => LocationToSouth,
+                ConsoleKey.W when LocationToWest != null && !LocationToWest.Locked => LocationToWest,
                 ConsoleKey.R => this,
                 _ => null
             };
@@ -109,7 +110,7 @@ public class Location
                 return moving;
             }
             Console.Clear();
-            Console.WriteLine("This is not a valid movement");
+            Console.WriteLine("This is not a valid movement or the Location is Locked (You miss one or more Quest or you miss a key item)");
         }
 
 
