@@ -126,6 +126,12 @@ public class Location
         {
             PrintMap(player);
             QuestHere(player);
+            if (player.GetStartedQuest() != null && MonsterLivingHere != null && player.GetStartedQuest()?.monsterType()?.ID == MonsterLivingHere.ID)
+            {
+                Console.Clear();
+                player.GetStartedQuest().Battle(player);
+                return this;
+            }
             Console.WriteLine("Press:\n[N]: To go Up (North)\n[E]: To go Right (East)\n[S]: To go Down (South)\n[W]: To go Left (West)\n[R]: Return I don't want to move.\nYou can use upper or lower to answer \n(The input will be recognized so you don't need to press enter after)");
             ConsoleKey key = Console.ReadKey(true).Key;
 
@@ -141,12 +147,6 @@ public class Location
             if (moving != null)
             {
                 return moving;
-            }
-            if (player.GetStartedQuest() != null && MonsterLivingHere != null && player.GetStartedQuest().monsterType().ID == MonsterLivingHere.ID)
-            {
-                Console.Clear();
-                player.GetStartedQuest().Battle(player);
-                return this;
             }
             Console.Clear();
             Console.WriteLine("This is not a valid movement or the Location is Locked (You miss one or more Quest or you miss a key item)");
