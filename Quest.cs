@@ -1,11 +1,5 @@
-// As a player I want to gain rewards when finishing a
-// quest so that I can use
-// these rewards later in the game
-// When a quest is completed then the player
-// receives better equipment
-// The reward is added to the inventory of the player
-// The reward can be equipped manually by the player,
-// no automatic equipping.
+// Custom weapon
+
 
 public class Quest
 {
@@ -14,32 +8,63 @@ public class Quest
     public string Description;
     public Weapon RewardWeapon;
     public bool IsCompleted;
+    public Location NextQuest;
 
-    public Quest(int id, string name, string description, Weapon rewardWeapon = null)
+    public Quest(int id, string name, string description, Weapon rewardWeapon = null, Location nextQuest = null)
     {
         ID = id;
         Name = name;
         Description = description;
         RewardWeapon = rewardWeapon;
+        NextQuest = nextQuest;
         IsCompleted = false;
     }
 
-    public void CompleteQuest()
+
+    Monster targetMonster = null;
+    int id_1 = World.MONSTER_ID_RAT;
+    int id_2 = World.MONSTER_ID_SNAKE;
+    int id_3 = World.MONSTER_ID_GIANT_SPIDER;
+
+    public bool CanStartQuest()
     {
-        IsCompleted = true;
+        switch (ID)
+        {
+            case World.QUEST_ID_CLEAR_ALCHEMIST_GARDEN:
+                return true;
+            case World.QUEST_ID_CLEAR_FARMERS_FIELD:
+                Quest alchemistQuest = World.QuestByID(World.QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
+                return alchemistQuest != null && alchemistQuest.IsCompleted;
+            case World.QUEST_ID_COLLECT_SPIDER_SILK:
+                Quest farmerQuest = World.QuestByID(World.QUEST_ID_CLEAR_FARMERS_FIELD);
+                return farmerQuest != null && farmerQuest.IsCompleted;
+            default:
+                return true;
+        }
     }
 
-    // When the player enters a location with a quest,
-    // ask the user if he wants to start the quest or not
-    // If the player does not want to start the quest,
-    // then prompt the options once more for that area
-    // If the player starts the quest then multiple
-    // fight scenes will activate until the player is
-    // successful
-    // If the player finished the quest then that
-    // quest will be marked as completed in their stats
-    // When a quest is completed the player will be
-    // notified if any new locations have been unlocked.
+    public bool CompleteQuest(Player player, bool successfullyCompleted)
+    {
+        if (!successfullyCompleted)
+        {
+            return false;
+        }
+
+        IsCompleted = true;
+
+        if (RewardWeapon != null)
+        {
+            Console.WriteLine($"You received: {RewardWeapon.Name}!");
+            player.CurrentWeapon = RewardWeapon;
+        }
+
+        if (NextQuest != null)
+        {
+            Console.WriteLine("The next location has been revealed");
+        }
+
+        return true;
+    }
 
     public void StartQuest(Player player)
     {
@@ -51,26 +76,44 @@ public class Quest
 
         if (choice == "y" || choice == "yes")
         {
+            if (!CanStartQuest())
+            {
+                Console.WriteLine("You need to complete previous quests before starting this one.");
+                return;
+            }
+            int quest_id = ID;
             Console.WriteLine($"Starting quest: {Name}");
             Console.WriteLine("You must defeat the enemy");
 
-            Monster targetMonster = null;
-            int id_1 = World.MONSTER_ID_RAT;
-            int id_2 = World.MONSTER_ID_SNAKE;
-            int id_3 = World.MONSTER_ID_GIANT_SPIDER;
-
+            // Quests
             switch (ID)
             {
                 case 1:
-                    targetMonster = World.MonsterByID(id_1);
+                    NextQuest = World.LocationByID(World.QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
                     break;
                 case 2:
-                    targetMonster = World.MonsterByID(id_2);
+                    NextQuest = World.LocationByID(World.QUEST_ID_CLEAR_FARMERS_FIELD);
                     break;
                 case 3:
-                    targetMonster = World.MonsterByID(id_3);
+                    NextQuest = World.LocationByID(World.QUEST_ID_COLLECT_SPIDER_SILK);
                     break;
             }
+
+            // Monsters by quest ID
+            switch (ID)
+            {
+                case 1:
+                    targetMonster = World.MonsterByID(World.MONSTER_ID_RAT);
+                    break;
+                case 2:
+                    targetMonster = World.MonsterByID(World.MONSTER_ID_SNAKE);
+                    break;
+                case 3:
+                    targetMonster = World.MonsterByID(World.MONSTER_ID_GIANT_SPIDER);
+                    break;
+            }
+
+
 
             if (targetMonster != null)
             {
@@ -83,7 +126,8 @@ public class Quest
                     Console.WriteLine("Press enter to attack");
                     Console.ReadLine();
 
-                    targetMonster.CurrentHitPoints -= 1;
+                    // Player attacks monster (will take ferom player.cs)
+                    targetMonster.TakeDamage(0, false);
                     Console.WriteLine($"You attacked {targetMonster.Name}");
 
                     if (targetMonster.CurrentHitPoints <= 0)
@@ -94,8 +138,10 @@ public class Quest
 
                     if (player.CurrentHitPoints > 0)
                     {
-                        player.CurrentHitPoints -= 1;
-                        Console.WriteLine($"{targetMonster.Name} attacked you");
+                        // Monster attacks player
+                        double monsterDamage = targetMonster.MaximumDamage;
+                        player.CurrentHitPoints -= (int)monsterDamage;
+                        Console.WriteLine($"{targetMonster.Name} attacked you for {monsterDamage} damage");
                     }
 
                     if (player.CurrentHitPoints <= 0)
@@ -113,16 +159,32 @@ public class Quest
                     }
                 }
 
-                CompleteQuest();
-                Console.WriteLine($"Quest completed: {Name}");
-
-                if (RewardWeapon != null)
+                // Quest completed successfully
+                bool questSuccess = CompleteQuest(player, true);
+                if (questSuccess)
                 {
-                    Console.WriteLine($"You received: {RewardWeapon.Name}!");
-                    player.CurrentWeapon = RewardWeapon;
+                    Console.WriteLine($"Quest completed: {ID}");
+                    
+                    Weapon questReward = null;
+                    switch (ID)
+                    {
+                        case World.QUEST_ID_CLEAR_ALCHEMIST_GARDEN:
+                        // Questreward
+                            break;
+                        case World.QUEST_ID_CLEAR_FARMERS_FIELD:
+                        // Questreward
+                            break;
+                        case World.QUEST_ID_COLLECT_SPIDER_SILK:
+                        //Questreward
+                            break;
+                    }
+                    
+                    if (questReward != null)
+                    {
+                        Console.WriteLine($"You received: {questReward.Name}!");
+                        player.CurrentWeapon = questReward;
+                    }
                 }
-
-                Console.WriteLine("New locations have been unlocked");
             }
         }
         else
@@ -130,9 +192,4 @@ public class Quest
             Console.WriteLine("Quest declined. You can try again later.");
         }
     }
-
-    // Won game
-
-    // To win the game the players needs to finish the quests
-    public void WonGame() { }
 }
