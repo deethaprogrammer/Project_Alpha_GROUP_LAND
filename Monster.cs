@@ -5,16 +5,18 @@ public class Monster
     public double MaximumDamage;
     public double CurrentHitPoints;
     public double MaximumHitPoints;
+    public bool IsAlive;
 
     private Random random = new Random();
 
-    public Monster(int id, string name, double maximumDamage, double currentHitPoints, double maximumHitPoints)
+    public Monster(int id, string name, double maximumDamage, double currentHitPoints, double maximumHitPoints, bool isAlive)
     {
         ID = id;
         Name = name;
         MaximumDamage = maximumDamage;
         CurrentHitPoints = currentHitPoints;
         MaximumHitPoints = maximumHitPoints;
+        IsAlive = isAlive;
     }
     
     public void TakeDamage(double damage, bool isCritical)
@@ -29,11 +31,20 @@ public class Monster
         {
             this.CurrentHitPoints -= Math.Round(adjustedDamage * 1.5, 1);
             Console.WriteLine($"{Name} took {Math.Round(adjustedDamage * 1.5, 1)} damage! {ReturnHealth()}");
+            if (CurrentHitPoints <= 0){ IsAlive = false; OnDeath();}
         } 
         else
         {
             this.CurrentHitPoints -= Math.Round(adjustedDamage, 1);
             Console.WriteLine($"{Name} took {Math.Round(adjustedDamage, 1)} damage! {ReturnHealth()}");
+            if (CurrentHitPoints <= 0){ IsAlive = false; OnDeath();}
+        }
+    }
+    public void OnDeath()
+    {
+        if (!IsAlive)
+        {
+            Console.WriteLine($"{Name} has been defeated!");
         }
     }
 
@@ -47,6 +58,6 @@ public class Monster
     public void DealDamageToPlayer(Player target)
     {
         bool isCritical = random.Next(2) == 0;
-        target.TakeDamage(MaximumDamage, isCritical);
+        target.TakeDamage(MaximumDamage, this, isCritical);
     }
 }
