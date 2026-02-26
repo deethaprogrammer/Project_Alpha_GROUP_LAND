@@ -7,11 +7,7 @@ public class Player
     public const int MaximumMagicPoints = 150;
     public Weapon CurrentWeapon;
     public Location CurrentLocation;
-    public readonly Dictionary<string, List<int>> Inventory = new()
-    {
-        {"Inventory", []}, 
-        {"Equipment", []}
-    };
+    public Inventory Inventory;
     public readonly Random RNG = new();
     public Player(string name, Weapon currentWeapon, Location currentLocation)
     {
@@ -20,6 +16,7 @@ public class Player
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
         CurrentWeapon = currentWeapon;
+        Inventory = new(this);
     }
     // Combat
     public void TakeDamage(double damage, Monster monster, bool isCritical = false)
@@ -67,56 +64,7 @@ public class Player
         CurrentLocation = World.LocationByID(1);
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
-        RemoveRandomItem(); // Remove random Weapon in Inventory when losing
-    }
-    // Inventory Management
-    public bool ItemInInventory(Weapon findWeapon) => Inventory["Inventory"].Contains(findWeapon.ID);
-    public void AddItemToInventory(Weapon newWeapon)
-    {
-        if (!ItemInInventory(newWeapon))
-        { Inventory["Inventory"].Add(newWeapon.ID); }
-        else
-        { Console.WriteLine("Item is already in inventory."); }
-    }
-    public void MoveItem(Weapon item, bool equip = false) // Unequips by default
-    {
-        List<int> fromList = Inventory["Equipment"];
-        List<int> toList = Inventory["Inventory"];
-        if (equip)
-        {
-            fromList = Inventory["Inventory"];
-            toList = Inventory["Equipment"];
-        }
-        fromList.Remove(item.ID);
-        toList.Add(item.ID);
-    }
-    public void EquipWeapon(Weapon newWeapon)
-    {
-        MoveItem(newWeapon, true);
-        CurrentWeapon = newWeapon;
-    }
-    public void UnequipWeapon(Weapon weapon)
-    {
-        MoveItem(weapon);
-        CurrentWeapon = null;
-    }
-    public string ViewItemsInInventory(string inventoryType) // Views inventory items with specifying string as parameter
-    {
-        List<string> options = ["Inventory", "Equipment"];
-        if (!options.Contains(inventoryType)) { throw new ArgumentException("Invalid InventoryType"); }
-        string start = $"Items in {inventoryType}:\n";
-        foreach (int id in Inventory[inventoryType])
-        {
-            start += $"{id}. {World.WeaponByID(id).Name}\n";
-        }
-        if (Inventory[inventoryType].Count == 0) { start += "None"; }
-        return start;
-    }
-    public void RemoveRandomItem()
-    {
-        int randomItemID = Inventory["Inventory"][RNG.Next(Inventory["Inventory"].Count) - 1];
-        Inventory["Inventory"].Remove(randomItemID);
-        Console.WriteLine($"You lost the {World.WeaponByID(randomItemID)} Weapon from your inventory!");
+        Inventory.RemoveRandomItem(); // Remove random Weapon in Inventory when losing
     }
     // Print Info of Player Instance
     public void PrintCriticalHit(bool isCritical)
