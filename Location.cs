@@ -54,14 +54,14 @@ public class Location
             Console.WriteLine(LocationToNorth.LegendName);
 
             Console.SetCursorPosition(x + 3, 2);
-            Console.WriteLine(LocationToNorth.Locked? "'x'" : "|");
+            Console.WriteLine(LocationToNorth.Locked ? "'x'" : "|");
 
         }
 
         if (LocationToEast != null)
         {
             Console.SetCursorPosition(x + 5, 3);
-            Console.WriteLine((LocationToEast.Locked? "'x'" : "-") + LocationToEast.LegendName);
+            Console.WriteLine((LocationToEast.Locked ? "'x'" : "-") + LocationToEast.LegendName);
         }
 
         if (LocationToSouth != null)
@@ -70,13 +70,13 @@ public class Location
             Console.WriteLine(LocationToSouth.LegendName);
 
             Console.SetCursorPosition(x + 3, 4);
-            Console.WriteLine(LocationToSouth.Locked? "'x'" : "|");
+            Console.WriteLine(LocationToSouth.Locked ? "'x'" : "|");
         }
 
         if (LocationToWest != null)
         {
             Console.SetCursorPosition(x, 3);
-            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked? "'x'" : "-"));
+            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked ? "'x'" : "-"));
         }
 
     }
@@ -88,11 +88,27 @@ public class Location
         Console.SetCursorPosition(0, 14);
     }
 
+    public Quest QuestHere(Player player)
+    {
+        if (QuestAvailableHere != null && !QuestAvailableHere.IsCompleted && player.GetStartedQuest() == null)
+        {
+            Console.WriteLine("There is a Quest that you can do");
+            return QuestAvailableHere;
+        }
+        else if (QuestAvailableHere != null && (QuestAvailableHere.IsCompleted || player.GetStartedQuest() != null))
+        {
+            Console.WriteLine(QuestAvailableHere.IsStarted ? "You are currently in a Quest." : "You have already finished this Quest.");
+            return null;
+        }
+        return null;
+    }
+
     public Location Move(Player player)
     {
         while (true)
         {
             PrintMap(player);
+            QuestHere(player);
             Console.WriteLine("Press:\n[N]: To go Up (North)\n[E]: To go Right (East)\n[S]: To go Down (South)\n[W]: To go Left (West)\n[R]: Return I don't want to move.\nYou can use upper or lower to answer \n(The input will be recognized so you don't need to press enter after)");
             ConsoleKey key = Console.ReadKey(true).Key;
 

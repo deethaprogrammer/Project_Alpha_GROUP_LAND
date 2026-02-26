@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+
 public class Player
 {
     public string Name;
@@ -124,6 +126,17 @@ public class Player
     {
         if (isCritical) { Console.WriteLine("Critical Hit!"); }
     }
+    public Quest GetStartedQuest()
+    {
+        foreach (Quest quest in quests)
+        {
+            if (quest.IsStarted)
+            {
+                return quest;
+            }
+        }
+        return null;
+    }
     public void PrintStats()
     {
         List<string> stats = [
@@ -132,6 +145,7 @@ public class Player
             $"Magic Points: {CurrentMagicPoints}/{MaximumMagicPoints}",
             $"Current Weapon: {CurrentWeapon.Name}",
             $"Current Location: {CurrentLocation.Name}",
+            $"Current Quest: {(GetStartedQuest() != null? GetStartedQuest().Description : "No active Quest")}",
             ];
         for (int i = 0; i < stats.Count; i++)
         {

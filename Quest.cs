@@ -14,6 +14,7 @@ public class Quest
     public string Description;
     public Weapon RewardWeapon;
     public bool IsCompleted;
+    public bool IsStarted;
 
     public Quest(int id, string name, string description, Weapon rewardWeapon = null)
     {
@@ -52,7 +53,8 @@ public class Quest
         if (choice == "y" || choice == "yes")
         {
             Console.WriteLine($"Starting quest: {Name}");
-            Console.WriteLine("You must defeat the enemy");
+            Console.WriteLine(Description);
+            IsStarted = true;
 
             Monster targetMonster = null;
             int id_1 = World.MONSTER_ID_RAT;
@@ -72,48 +74,53 @@ public class Quest
                     break;
             }
 
-            if (targetMonster != null)
-            {
-                Console.WriteLine($"A wild {targetMonster.Name} appears!");
+            // if (targetMonster != null)
+            // {
+            //     Console.WriteLine($"A wild {targetMonster.Name} appears!");
 
-                while (targetMonster.CurrentHitPoints > 0 && player.CurrentHitPoints > 0)
-                {
-                    Console.WriteLine($"{targetMonster.Name} HP: {targetMonster.ReturnHealth()}");
+            //     while (targetMonster.CurrentHitPoints > 0 && player.CurrentHitPoints > 0)
+            //     {
+            //         Console.WriteLine($"{targetMonster.Name} HP: {targetMonster.ReturnHealth()}");
 
-                    Console.WriteLine("Press enter to attack");
-                    Console.ReadLine();
+            //         Console.WriteLine("Press enter to attack");
+            //         Console.ReadLine();
 
-                    targetMonster.CurrentHitPoints -= 1;
-                    Console.WriteLine($"You attacked {targetMonster.Name}");
+            //         targetMonster.CurrentHitPoints -= 1;
+            //         Console.WriteLine($"You attacked {targetMonster.Name}");
 
-                    if (targetMonster.CurrentHitPoints <= 0)
-                    {
-                        Console.WriteLine($"You defeated {targetMonster.Name}!");
-                        break;
-                    }
+            //         if (targetMonster.CurrentHitPoints <= 0)
+            //         {
+            //             Console.WriteLine($"You defeated {targetMonster.Name}!");
+            //             break;
+            //         }
 
-                    if (player.CurrentHitPoints > 0)
-                    {
-                        player.CurrentHitPoints -= 1;
-                        Console.WriteLine($"{targetMonster.Name} attacked you");
-                    }
+            //         if (player.CurrentHitPoints > 0)
+            //         {
+            //             player.CurrentHitPoints -= 1;
+            //             Console.WriteLine($"{targetMonster.Name} attacked you");
+            //         }
 
-                    if (player.CurrentHitPoints <= 0)
-                    {
-                        Console.WriteLine("You lost");
-                        Console.WriteLine("Quest failed. Try again?");
-                        string restart = Console.ReadLine().ToLower();
-                        if (restart == "y" || restart == "yes")
-                        {
-                            player.CurrentHitPoints = player.MaximumHitPoints;
-                            targetMonster.CurrentHitPoints = targetMonster.MaximumHitPoints;
-                            Console.WriteLine("Restarting quest...");
-                            return;
-                        }
-                    }
-                }
+            //         if (player.CurrentHitPoints <= 0)
+            //         {
+            //             Console.WriteLine("You lost");
+            //             Console.WriteLine("Quest failed. Try again?");
+            //             string restart = Console.ReadLine().ToLower();
+            //             if (restart == "y" || restart == "yes")
+            //             {
+            //                 targetMonster.CurrentHitPoints = targetMonster.MaximumHitPoints;
+            //                 Console.WriteLine("Restarting quest...");
+            //                 return;
+            //             }
+            //             else if (restart == "n" || restart == "no")
+            //             {
+            //                 IsStarted = false;
+            //                 return;
+            //             }
+            //         }
+            //     }
 
-                CompleteQuest();
+                // CompleteQuest();
+                // IsStarted = false;
                 Console.WriteLine($"Quest completed: {Name}");
 
                 if (RewardWeapon != null)
@@ -125,11 +132,11 @@ public class Quest
                 Console.WriteLine("New locations have been unlocked");
             }
         }
-        else
-        {
-            Console.WriteLine("Quest declined. You can try again later.");
-        }
-    }
+    //     else
+    //     {
+    //         Console.WriteLine("Quest declined. You can try again later.");
+    //     }
+    // }
 
     // Won game
 

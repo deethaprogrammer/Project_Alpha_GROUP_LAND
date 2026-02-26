@@ -22,5 +22,13 @@ public static class Program
             }
             player.CurrentLocation = NewLocation;
         } while (true);
+        Console.Clear();
+        player.CurrentLocation.PrintMap(player);
+        if (player.CurrentLocation.QuestHere(player) != null)
+        {
+            player.CurrentLocation.QuestAvailableHere.StartQuest(player);
+        }
+        Console.Clear();
+        player.CurrentLocation.PrintMap(player);
     }
 }
