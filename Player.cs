@@ -36,7 +36,8 @@ public class Player
         CurrentHitPoints = (hpLeft >= 0) ? hpLeft : 0;
         PrintStats();
         PrintCriticalHit(isCritical);
-        Console.WriteLine($"{monster.Name} dealt {Math.Round(damageTaken, 1)} damage to {Name}!");
+        if (CurrentHitPoints < 0) { CurrentHitPoints = 0; }
+        Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 1)} damage to {Name}!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
         if (PlayerDied()) { GameOver(); }
     }
     // probably don't need this
@@ -141,7 +142,7 @@ public class Player
     {
         List<string> stats = [
             $"Name: {Name}",
-            $"Health: {CurrentHitPoints}/{MaximumHitPoints}",
+            $"Health: {Math.Round(CurrentHitPoints, 1)}/{MaximumHitPoints}",
             $"Magic Points: {CurrentMagicPoints}/{MaximumMagicPoints}",
             $"Current Weapon: {CurrentWeapon.Name}",
             $"Current Location: {CurrentLocation.Name}",

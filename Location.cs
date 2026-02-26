@@ -60,8 +60,8 @@ public class Location
 
         if (LocationToEast != null)
         {
-            Console.SetCursorPosition(x + 5, 3);
-            Console.WriteLine((LocationToEast.Locked ? "'x'" : "-") + LocationToEast.LegendName);
+            Console.SetCursorPosition(x + 7, 3);
+            Console.WriteLine((LocationToEast.Locked ? " 'x' " : " - ") + LocationToEast.LegendName);
         }
 
         if (LocationToSouth != null)
@@ -75,8 +75,8 @@ public class Location
 
         if (LocationToWest != null)
         {
-            Console.SetCursorPosition(x, 3);
-            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked ? "'x'" : "-"));
+            Console.SetCursorPosition(x - 2, 3);
+            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked ? " 'x' " : " - "));
         }
 
     }
@@ -124,6 +124,12 @@ public class Location
             if (moving != null)
             {
                 return moving;
+            }
+            if (player.GetStartedQuest() != null && MonsterLivingHere != null && player.GetStartedQuest().monsterType().ID == MonsterLivingHere.ID)
+            {
+                Console.Clear();
+                player.GetStartedQuest().Battle(player);
+                return this;
             }
             Console.Clear();
             Console.WriteLine("This is not a valid movement or the Location is Locked (You miss one or more Quest or you miss a key item)");
