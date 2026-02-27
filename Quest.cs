@@ -96,7 +96,11 @@ public class Quest
             {
                 if (player.CurrentHitPoints > target.CurrentHitPoints)
                 {
-                    return player.FleeFromBattle();
+                    if (player.FleeFromBattle())
+                    {
+                        player.CurrentLocation = player.FleeTOLocation();
+                        return true;
+                    }
                 }
                 return null;
             }
@@ -141,7 +145,7 @@ public class Quest
                     Console.Clear();
                     Console.WriteLine($"Monster: {target.Name} has {target.CurrentHitPoints}/{target.MaximumHitPoints} left.\n");
                     player.PrintStats();
-                    Console.WriteLine("Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Flee.\n(Flee has a 50% chance to happen if player health is higher than the hit points of the enemy.)");
+                    Console.WriteLine("Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Flee.\n(Flee has a 75% chance to happen if player health is higher than the hit points of the enemy.)");
                     if (DoActionplayer(player, target) != null)
                     {
                         target.CurrentHitPoints = target.MaximumHitPoints;

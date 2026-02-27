@@ -73,7 +73,7 @@ public static class World
                 CompleteAlchemist);
 
 
-        Quest CompleteFarmer = new Quest(Completion_Farm, "completed", "return to the Farmer for your reward (Farmhouse)");
+        Quest CompleteFarmer = new Quest(Completion_Farm, "completed", "return to the Farmer for your reward (Farmhouse)", null);
         Quest clearFarmersField =
             new Quest(
                 QUEST_ID_CLEAR_FARMERS_FIELD,

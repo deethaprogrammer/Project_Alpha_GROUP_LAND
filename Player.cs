@@ -51,7 +51,7 @@ public class Player
     }
     public bool FleeFromBattle()
     {
-        if (RNG.NextDouble() < 0.5) { Console.WriteLine($"{Name} failed to flee from the battle!"); return false; }
+        if (RNG.NextDouble() < 0.25) { Console.WriteLine($"{Name} failed to flee from the battle!"); return false; }
         else { Console.WriteLine($"{Name} successfully fleed from the battle!"); return true; }
     }
     public bool PlayerDied() => CurrentHitPoints <= 0;
@@ -83,6 +83,18 @@ public class Player
             if (quest.IsStarted)
             {
                 return quest;
+            }
+        }
+        return null;
+    }
+
+    public Location FleeTOLocation()
+    {
+        foreach (Location locationQuest in World.Locations)
+        {
+            if (locationQuest.QuestAvailableHere != null && GetStartedQuest().ID == locationQuest.QuestAvailableHere.ID)
+            {
+                return locationQuest;
             }
         }
         return null;
