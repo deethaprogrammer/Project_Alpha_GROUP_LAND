@@ -163,6 +163,11 @@ public static class World
         Locations.Add(spiderField);
     }
 
+    public static void ContinueMode()
+    {
+        Console.WriteLine("\n\nPress 'ENTER' to continue");
+        Console.ReadLine();
+    }
     public static Location LocationByID(int id)
     {
         foreach (Location location in Locations)

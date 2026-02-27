@@ -152,9 +152,10 @@ public class Quest
                         return;
                     }
                     if (target.CurrentHitPoints != 0) { MonsterAction(target, player); }
-                    if (player.CurrentHitPoints <= 0)
+                    if (player.PlayerDied())
                     {
                         target.CurrentHitPoints = target.MaximumHitPoints;
+                        player.GameOver();
                         return;
                     }
 

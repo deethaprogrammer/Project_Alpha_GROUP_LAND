@@ -92,25 +92,20 @@ public class Location
     {
         if (QuestAvailableHere != null && !QuestAvailableHere.IsCompleted && player.GetStartedQuest() == null)
         {
-            Console.WriteLine("There is a Quest that you can do");
+            Console.Clear();
+            Console.WriteLine("There is a Quest that you can do, stop moving by pressing r in order to accept it.");
             return QuestAvailableHere;
         }
         else if (QuestAvailableHere != null && QuestAvailableHere.IsCompleted && QuestAvailableHere.NextQuest.IsStarted)
         {
-            do
-            {
-                Console.WriteLine($"Do you want to receive your reward?\nYou will get a {QuestAvailableHere.NextQuest.RewardWeapon.Name} (y/n)");
-                string answered = Console.ReadLine().ToLower();
-                if (answered == "y")
-                {
-                    QuestAvailableHere.NextQuest.IsStarted = false;
-                    QuestAvailableHere.NextQuest.IsCompleted = true;
-                    player.Inventory.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon);
-                    break;
-                }
-            } while (true);
+            Console.Clear();
+            Console.WriteLine($"Thank you for completing my Quest Take your reward:\n'You will get a {QuestAvailableHere.NextQuest.RewardWeapon.Name} Dealing: {QuestAvailableHere.NextQuest.RewardWeapon.MaximumDamage} as max damage'");
 
-
+            QuestAvailableHere.NextQuest.IsStarted = false;
+            QuestAvailableHere.NextQuest.IsCompleted = true;
+            player.Inventory.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon);
+            World.ContinueMode();
+            Console.Clear();
         }
         else if (QuestAvailableHere != null && (QuestAvailableHere.IsCompleted || player.GetStartedQuest() != null))
         {
@@ -124,8 +119,8 @@ public class Location
     {
         while (true)
         {
-            PrintMap(player);
             QuestHere(player);
+            PrintMap(player);
             if (player.GetStartedQuest() != null && MonsterLivingHere != null && player.GetStartedQuest()?.monsterType()?.ID == MonsterLivingHere.ID)
             {
                 Console.Clear();

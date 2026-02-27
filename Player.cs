@@ -12,13 +12,12 @@ public class Player
     public List<Quest> quests;
     public Inventory Inventory;
     public readonly Random RNG = new();
-    public Player(string name, Weapon currentWeapon, Location currentLocation, List<Quest> quest)
+    public Player(string name, Location currentLocation, List<Quest> quest)
     {
         Name = name;
         CurrentLocation = currentLocation;
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
-        CurrentWeapon = currentWeapon;
         quests = quest;
         Inventory = new(this);
     }
@@ -40,8 +39,14 @@ public class Player
     public void Defend()
     {
         int magicIncrease = RNG.Next(1, 11) * 5;
-        CurrentMagicPoints += magicIncrease;
-        Console.WriteLine($"{Name} defended themselves and gained {magicIncrease} MP!");
+        if (CurrentMagicPoints <= MaximumMagicPoints)
+        {
+            CurrentMagicPoints += magicIncrease;
+            if (CurrentMagicPoints > MaximumMagicPoints) { CurrentMagicPoints = MaximumMagicPoints; }
+            Console.WriteLine($"{Name} defended themselves. MP: {CurrentMagicPoints}/{MaximumMagicPoints}");
+            World.ContinueMode();
+        }
+
     }
     public bool IsCriticalHit()
     {
@@ -57,6 +62,7 @@ public class Player
     public bool PlayerDied() => CurrentHitPoints <= 0;
     public void GameOver()
     {
+        Console.Clear();
         Console.WriteLine($"{Name} has no more HP to continue on.\nGame Over!\nWould you like to continue?");
         string? prompt = Console.ReadLine();
         if (string.IsNullOrEmpty(prompt)) { prompt = "No"; }
