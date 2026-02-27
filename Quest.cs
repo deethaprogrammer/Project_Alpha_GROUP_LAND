@@ -47,11 +47,13 @@ public class Quest
         return targetMonster;
     }
 
-    public string BattleOption(bool Crit)
+    public string BattleOption(bool Crit, Monster target, Player player)
     {
         do
         {
             Console.Clear();
+            player.PrintStats();
+            Console.WriteLine($"Monster: {target.Name} has {Math.Round(target.CurrentHitPoints, 3)}/{target.MaximumHitPoints} left.\n");
             if (Crit) { Console.WriteLine("you can attack with a critical\nPlease enter a new option"); }
             Console.WriteLine("Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Flee.\n(Flee has a 75% chance to happen if player health is higher than the hit points of the enemy.)");
 
@@ -80,7 +82,8 @@ public class Quest
         do
         {
             // Console.Clear();
-            string answer = BattleOption(playerCritical);
+            string answer = BattleOption(playerCritical, target, player);
+            Console.Clear();
             if (answer == "attack")
             {
                 target.TakeDamage(player.CurrentWeapon.MaximumDamage, playerCritical, player);
@@ -157,10 +160,11 @@ public class Quest
                         target.CurrentHitPoints = target.MaximumHitPoints;
                         return;
                     }
-                    if (target.CurrentHitPoints != 0) { MonsterAction(target, player); }
+                    if (target.CurrentHitPoints != 0) { MonsterAction(target, player); World.ContinueMode(); }
                     if (player.PlayerDied())
                     {
                         target.CurrentHitPoints = target.MaximumHitPoints;
+                        CurrentKills = 0;
                         player.GetStartedQuest().IsStarted = false;
                         player.GameOver();
                         return;
@@ -185,15 +189,17 @@ public class Quest
                 CompleteQuest();
                 IsStarted = false;
                 CurrentKills = 0;
-                Console.WriteLine("Two new messages:\n- A new area opened up\n- Return to the Quest giver in order to claim your reward\nPress enter if you have seen the message");
-                Console.ReadLine();
                 if (this.NextQuest != null) { this.NextQuest.IsStarted = true; }
                 switch (ID)
                 {
                     case 1:
+                        Console.WriteLine($"Great job\nI got great new for you.\n1. You have unlocked the following area: {World.LocationByID(World.LOCATION_ID_FARMHOUSE).Name}\nReturn to the Location where you accepted the Quest (see upper right corner for the details)");
+                        World.ContinueMode();
                         World.LocationByID(World.LOCATION_ID_FARMHOUSE).Locked = false;
                         break;
                     case 2:
+                        Console.WriteLine($"Great job\nI got great new for you.\n1. You have unlocked the following area: {World.LocationByID(World.LOCATION_ID_BRIDGE).Name}\nReturn to the Location where you accepted the Quest (see upper right corner for the details)");
+                        World.ContinueMode();
                         World.LocationByID(World.LOCATION_ID_BRIDGE).Locked = false;
                         break;
                 }
@@ -202,10 +208,7 @@ public class Quest
     }
 
 
-    public void receiveReward(Player player)
-    {
-
-    }
+    
     public void StartQuest(Player player)
     {
         Console.WriteLine($"Quest: {Name}");
@@ -221,5 +224,8 @@ public class Quest
             IsStarted = true;
         }
     }
-    public void WonGame() { }
+    public void WonGame()
+    {
+        
+    }
 }

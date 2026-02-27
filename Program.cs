@@ -15,6 +15,7 @@ public class Program
         Console.Clear();
         while (true)
         {
+            player.WonGame();
             player.CurrentLocation.PrintMap(player);
             Options(player);
         }

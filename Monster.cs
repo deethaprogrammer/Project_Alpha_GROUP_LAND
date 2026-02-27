@@ -38,7 +38,7 @@ public class Monster
 
         }
         if (CurrentHitPoints < 0) { CurrentHitPoints = 0; }
-        Console.WriteLine($"{player.Name} dealt {Math.Round(adjustedDamage, 1)} damage to {Name}!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
+        Console.WriteLine($"{player.Name} dealt {Math.Round(adjustedDamage, 3)} damage to {Name}!\n{Name} HP: {Math.Round(CurrentHitPoints, 3)}/{MaximumHitPoints}");
     }
 
 

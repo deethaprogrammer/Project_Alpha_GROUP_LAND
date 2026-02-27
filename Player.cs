@@ -33,7 +33,7 @@ public class Player
         PrintStats();
         PrintCriticalHit(isCritical);
         if (CurrentHitPoints < 0) { CurrentHitPoints = 0; }
-        Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 1)} damage to {Name}!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
+        Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 3)} damage to {Name}!\n{Name} defended against {Math.Round(damage - damageTaken, 3)} Damage!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
 
     }
     public void Defend()
