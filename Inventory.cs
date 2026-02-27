@@ -36,10 +36,11 @@ public class Inventory
     {
         if (inventory == Unequipped)
         {
-            Console.WriteLine("What do you want to equip (If you do Not want to equip anything press r + enter, else press the number of the equipment)");
+            Console.WriteLine("What do you want to equip (If you do Not want to equip anything press r + enter, else press the number of the equipment\nif nothing is chosen (so enter) it will close like r does)");
             Console.WriteLine(ViewItemsInInventory("inventory"));
-            string input = Console.ReadLine()!.ToLower();
-            if (input == null)
+            string input = Console.ReadLine()!.ToLower().Trim();
+            bool Number = int.TryParse(input, out int number);
+            if (input != "r" && !Number)
             {
                 Console.WriteLine("That is not an option");
             }
@@ -49,7 +50,7 @@ public class Inventory
             }
             else
             {
-                Weapon weapon = World.WeaponByID(Convert.ToInt32(input));
+                Weapon weapon = World.WeaponByID(number);
                 if (weapon == null)
                 {
                     Console.WriteLine("Not a valid option!");
@@ -62,10 +63,11 @@ public class Inventory
         }
         else if (inventory == Equipped)
         {
-            Console.WriteLine("What do you want to unEquip (If you do Not want to unEquip anything press r + enter, else press the number of the equipment)");
+            Console.WriteLine("What do you want to unEquip (If you do Not want to unEquip anything press r + enter, else press the number of the equipment\nif nothing is chosen (so enter) it will close like r does)");
             Console.WriteLine(ViewItemsInInventory("equipment"));
-            string input = Console.ReadLine()!.ToLower();
-            if (input == null)
+            string input = Console.ReadLine()!.ToLower().Trim();
+            bool Number = int.TryParse(input, out int number);
+            if (input != "r" && !Number)
             {
                 Console.WriteLine("That is not an option");
             }
@@ -75,7 +77,7 @@ public class Inventory
             }
             else
             {
-                Weapon weapon = World.WeaponByID(Convert.ToInt32(input));
+                Weapon weapon = World.WeaponByID(number);
                 if (weapon == null)
                 {
                     Console.WriteLine("Not a valid option!");
@@ -105,7 +107,7 @@ public class Inventory
     }
     public void RemoveRandomItem()
     {
-        int randomItemID = Unequipped[new Random().Next(Unequipped.Count) - 1];
+        int randomItemID = Unequipped[new Random().Next(Unequipped.Count)];
         Weapon item = World.WeaponByID(randomItemID);
         RemoveItemFromInventory(item);
         Console.WriteLine($"You lost the {item} Weapon from your inventory!");

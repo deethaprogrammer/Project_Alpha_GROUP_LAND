@@ -47,10 +47,14 @@ public class Quest
         return targetMonster;
     }
 
-    public string BattleOption()
+    public string BattleOption(bool Crit)
     {
         do
         {
+            Console.Clear();
+            if (Crit) { Console.WriteLine("you can attack with a critical\nPlease enter a new option"); }
+            Console.WriteLine("Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Flee.\n(Flee has a 75% chance to happen if player health is higher than the hit points of the enemy.)");
+
             string option = Console.ReadLine().Trim();
             string? answer = option switch
             {
@@ -75,7 +79,8 @@ public class Quest
         bool playerCritical = false;
         do
         {
-            string answer = BattleOption();
+            // Console.Clear();
+            string answer = BattleOption(playerCritical);
             if (answer == "attack")
             {
                 target.TakeDamage(player.CurrentWeapon.MaximumDamage, playerCritical, player);
@@ -104,6 +109,7 @@ public class Quest
                 }
                 return null;
             }
+
         } while (true);
     }
 
@@ -138,14 +144,14 @@ public class Quest
         if (target != null)
         {
             Console.WriteLine($"A Wild {target.Name} has appeared");
+            World.ContinueMode();
             for (; CurrentKills < KillsNeeded; CurrentKills++)
             {
                 do
                 {
                     Console.Clear();
-                    Console.WriteLine($"Monster: {target.Name} has {target.CurrentHitPoints}/{target.MaximumHitPoints} left.\n");
+                    Console.WriteLine($"Monster: {target.Name} has {Math.Round(target.CurrentHitPoints, 1)}/{target.MaximumHitPoints} left.\n");
                     player.PrintStats();
-                    Console.WriteLine("Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Flee.\n(Flee has a 75% chance to happen if player health is higher than the hit points of the enemy.)");
                     if (DoActionplayer(player, target) != null)
                     {
                         target.CurrentHitPoints = target.MaximumHitPoints;
@@ -155,6 +161,7 @@ public class Quest
                     if (player.PlayerDied())
                     {
                         target.CurrentHitPoints = target.MaximumHitPoints;
+                        player.GetStartedQuest().IsStarted = false;
                         player.GameOver();
                         return;
                     }
@@ -165,6 +172,9 @@ public class Quest
                     Console.WriteLine("Do you want to continue fighting or will you be back later? y / n (press y or n after that press enter)");
                     if (Continue() != true)
                     {
+                        player.CurrentLocation = player.FleeTOLocation();
+                        CurrentKills++;
+                        target.CurrentHitPoints = target.MaximumHitPoints;
                         return;
                     }
                 }
@@ -177,7 +187,7 @@ public class Quest
                 CurrentKills = 0;
                 Console.WriteLine("Two new messages:\n- A new area opened up\n- Return to the Quest giver in order to claim your reward\nPress enter if you have seen the message");
                 Console.ReadLine();
-                this.NextQuest.IsStarted = true;
+                if (this.NextQuest != null) { this.NextQuest.IsStarted = true; }
                 switch (ID)
                 {
                     case 1:
@@ -194,7 +204,7 @@ public class Quest
 
     public void receiveReward(Player player)
     {
-        
+
     }
     public void StartQuest(Player player)
     {
@@ -209,16 +219,6 @@ public class Quest
             Console.WriteLine($"Starting quest: {Name}");
             Console.WriteLine(Description);
             IsStarted = true;
-
-            Console.WriteLine($"Quest completed: {Name}");
-
-            if (RewardWeapon != null)
-            {
-                Console.WriteLine($"You received: {RewardWeapon.Name}!");
-                player.CurrentWeapon = RewardWeapon;
-            }
-
-            Console.WriteLine("New locations have been unlocked");
         }
     }
     public void WonGame() { }

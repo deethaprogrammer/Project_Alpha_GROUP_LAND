@@ -8,7 +8,7 @@ public class Program
         Console.Clear();
         Console.WriteLine("Hello Dear player, We would Like to know your name. So please enter a name.");
         string PlayerName = Console.ReadLine()!;
-        if (PlayerName == null) { PlayerName = "John"; }
+        if (PlayerName == null || PlayerName.Trim() == "") { PlayerName = "John"; }
         Player player = new(PlayerName, World.Locations[0], World.Quests);
         player.Inventory.AddItemToInventory(World.Weapons[0]);
         player.Inventory.EquipItem(World.Weapons[0]);
@@ -28,7 +28,7 @@ public class Program
         }
         Console.WriteLine("[m] Move to a different place.");
         Console.WriteLine("[i] Open your inventory.");
-        if (player.CurrentLocation.QuestAvailableHere != null && player.CurrentLocation.QuestAvailableHere.IsCompleted != true && player.GetStartedQuest() == null)
+        if (player.CurrentLocation.QuestHere(player) != null)
         {
             Console.WriteLine("[q] Get quest.");
         }
@@ -41,9 +41,10 @@ public class Program
             string input = Console.ReadLine()!.ToLower();
             switch (input)
             {
-                case "z":
+                case "z" when player.CurrentLocation.ID == World.LOCATION_ID_HOME:
                     Console.Clear();
                     Console.WriteLine("You have slept and fully restored your HP.");
+                    player.CurrentHitPoints = Player.MaximumHitPoints;
                     World.ContinueMode();
                     Console.Clear();
                     return;
@@ -54,6 +55,15 @@ public class Program
                 case "i":
                     InventoryMenu(player);
                     Console.Clear();
+                    return;
+                case "q" when player.CurrentLocation.QuestHere(player) != null:
+                    Console.Clear();
+                    player.CurrentLocation.QuestAvailableHere.StartQuest(player);
+                    Console.Clear();
+                    return;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Make sure you press the right key");
                     return;
             }
         } while (true);
@@ -74,6 +84,7 @@ public class Program
     }
     public static void InventoryMenu(Player player)
     {
+        Console.Clear();
         do
         {
             Console.WriteLine("[1] Open your inventory.\n[2] Open your equipment\n[3] close inventory menu.");
@@ -86,6 +97,12 @@ public class Program
                 case "2":
                     player.Inventory.equip_deEquip(player.Inventory.Equipped);
                     return;
+                case "3":
+                    return;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("not an option");
+                    break;
             }
         } while (true);
     }

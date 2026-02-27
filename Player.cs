@@ -34,7 +34,7 @@ public class Player
         PrintCriticalHit(isCritical);
         if (CurrentHitPoints < 0) { CurrentHitPoints = 0; }
         Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 1)} damage to {Name}!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
-        if (PlayerDied()) { GameOver(); }
+
     }
     public void Defend()
     {
@@ -44,7 +44,7 @@ public class Player
             CurrentMagicPoints += magicIncrease;
             if (CurrentMagicPoints > MaximumMagicPoints) { CurrentMagicPoints = MaximumMagicPoints; }
             Console.WriteLine($"{Name} defended themselves. MP: {CurrentMagicPoints}/{MaximumMagicPoints}");
-            World.ContinueMode();
+
         }
 
     }
@@ -63,7 +63,7 @@ public class Player
     public void GameOver()
     {
         Console.Clear();
-        Console.WriteLine($"{Name} has no more HP to continue on.\nGame Over!\nWould you like to continue?");
+        Console.WriteLine($"{Name} has no more HP to continue on.\nGame Over!\nWould you like to continue? press (y/n if you do not press one of them it counts as no)");
         string? prompt = Console.ReadLine();
         if (string.IsNullOrEmpty(prompt)) { prompt = "No"; }
         if (prompt.ToUpper()[0] == 'Y') { ResetStats(); }
@@ -125,5 +125,17 @@ public class Player
         }
         Console.SetCursorPosition(0, Console.CursorTop + 1);
         Console.WriteLine();
+    }
+    public void WonGame()
+    {
+        foreach (Quest quest in quests)
+        {
+            if (!quest.IsCompleted) { return; }
+        }
+        Console.Clear();
+        Console.WriteLine("You have done it.\nYou saved the poor villagers");
+        Console.WriteLine("\n\n\nThis game will close itself after you press enter");
+        Console.ReadLine();
+        Environment.Exit(0);
     }
 }

@@ -61,7 +61,7 @@ public class Location
         if (LocationToEast != null)
         {
             Console.SetCursorPosition(x + 7, 3);
-            Console.WriteLine((LocationToEast.Locked ? " 'x' " : " - ") + LocationToEast.LegendName);
+            Console.WriteLine((LocationToEast.Locked ? "'x'" : "-") + LocationToEast.LegendName);
         }
 
         if (LocationToSouth != null)
@@ -76,7 +76,7 @@ public class Location
         if (LocationToWest != null)
         {
             Console.SetCursorPosition(x - 2, 3);
-            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked ? " 'x' " : " - "));
+            Console.WriteLine(LocationToWest.LegendName + (LocationToWest.Locked ? "'x'" : "-"));
         }
 
     }
@@ -92,8 +92,7 @@ public class Location
     {
         if (QuestAvailableHere != null && !QuestAvailableHere.IsCompleted && player.GetStartedQuest() == null)
         {
-            Console.Clear();
-            Console.WriteLine("There is a Quest that you can do, stop moving by pressing r in order to accept it.");
+            Console.WriteLine("There is a Quest that you can do. (If you can move than press r to be able to take the quest.)");
             return QuestAvailableHere;
         }
         else if (QuestAvailableHere != null && QuestAvailableHere.IsCompleted && QuestAvailableHere.NextQuest.IsStarted)
@@ -103,7 +102,7 @@ public class Location
 
             QuestAvailableHere.NextQuest.IsStarted = false;
             QuestAvailableHere.NextQuest.IsCompleted = true;
-            player.Inventory.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon);
+            if (QuestAvailableHere.NextQuest != null) { player.Inventory.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon); }
             World.ContinueMode();
             Console.Clear();
         }
@@ -123,9 +122,17 @@ public class Location
             PrintMap(player);
             if (player.GetStartedQuest() != null && MonsterLivingHere != null && player.GetStartedQuest()?.monsterType()?.ID == MonsterLivingHere.ID)
             {
+                if (player.CurrentWeapon == null)
+                {
+                    Console.Clear();
+                    Console.WriteLine("You can't start a battle without a weapon. Make sure you equip a weapon from your inventory");
+                    World.ContinueMode();
+                    Console.Clear();
+                    return player.FleeTOLocation();
+                }
                 Console.Clear();
                 player.GetStartedQuest().Battle(player);
-                return this;
+                return player.CurrentLocation;
             }
             Console.WriteLine("Press:\n[N]: To go Up (North)\n[E]: To go Right (East)\n[S]: To go Down (South)\n[W]: To go Left (West)\n[R]: Return I don't want to move.\nYou can use upper or lower to answer \n(The input will be recognized so you don't need to press enter after)");
             ConsoleKey key = Console.ReadKey(true).Key;

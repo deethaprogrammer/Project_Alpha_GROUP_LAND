@@ -9,6 +9,7 @@ public static class World
 
     public const int WEAPON_ID_RUSTY_SWORD = 1;
     public const int WEAPON_ID_CLUB = 2;
+    public const int WEAPON_ID_SPEAR = 3;
 
     public const int MONSTER_ID_RAT = 1;
     public const int MONSTER_ID_SNAKE = 2;
@@ -42,7 +43,8 @@ public static class World
     public static void PopulateWeapons()
     {
         Weapons.Add(new Weapon(WEAPON_ID_RUSTY_SWORD, "Rusty sword", 5));
-        Weapons.Add(new Weapon(WEAPON_ID_CLUB, "Club", 10));
+        Weapons.Add(new Weapon(WEAPON_ID_CLUB, "Club", 7));
+        Weapons.Add(new Weapon(WEAPON_ID_SPEAR,"Spear", 10));
     }
 
     public static void PopulateMonsters()
@@ -73,7 +75,7 @@ public static class World
                 CompleteAlchemist);
 
 
-        Quest CompleteFarmer = new Quest(Completion_Farm, "completed", "return to the Farmer for your reward (Farmhouse)", null);
+        Quest CompleteFarmer = new Quest(Completion_Farm, "completed", "return to the Farmer for your reward (Farmhouse)", WeaponByID(WEAPON_ID_SPEAR));
         Quest clearFarmersField =
             new Quest(
                 QUEST_ID_CLEAR_FARMERS_FIELD,
