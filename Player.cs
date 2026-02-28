@@ -75,7 +75,7 @@ public class Player
         CurrentLocation = World.LocationByID(1);
         CurrentHitPoints = MaximumHitPoints;
         CurrentMagicPoints = 0;
-        Inventory.RemoveRandomItem(); // Remove random Weapon in Inventory when losing
+        if (Inventory.ItemChekUnEquiped()) { Inventory.RemoveRandomItem(); } // Remove random Weapon in Inventory when losing if possible
     }
     // Print Info of Player Instance
     public void PrintCriticalHit(bool isCritical)
@@ -110,7 +110,7 @@ public class Player
         string currentWeaponName = (CurrentWeapon is null) ? "None" : CurrentWeapon.Name;
         List<string> stats = [
             $"Name: {Name}",
-            $"Health: {Math.Round(CurrentHitPoints, 1)}/{MaximumHitPoints}",
+            $"Health: {Math.Round(CurrentHitPoints, 3)}/{MaximumHitPoints}",
             $"Magic Points: {CurrentMagicPoints}/{MaximumMagicPoints}",
             $"Current Weapon: {currentWeaponName}",
             $"Current Location: {CurrentLocation.Name}",
@@ -143,7 +143,7 @@ public class Player
         Console.Clear();
         foreach (Quest quest in quests)
         {
-            Console.WriteLine($"- {quest.Description}: {(quest.IsCompleted? "Completed" : "Not yet completed")}.\n");
+            Console.WriteLine($"- {quest.Description}: {(quest.IsCompleted ? "Completed" : "Not yet completed")}.\n");
         }
         World.ContinueMode();
         return;

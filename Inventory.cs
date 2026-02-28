@@ -90,6 +90,10 @@ public class Inventory
             }
         }
     }
+    public bool ItemChekUnEquiped()//method so that you don't crash if you die with nothing in your unequiped inventory
+    {
+        return Unequipped.Count > 0;
+    }
     public string ViewItemsInInventory(string inventoryType)
     {
         List<int> inventory = inventoryType.ToLower() switch
