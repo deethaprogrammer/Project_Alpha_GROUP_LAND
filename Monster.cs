@@ -29,16 +29,16 @@ public class Monster
         if (isCritical)
         {
             adjustedDamage = adjustedDamage * 1.5;
-            this.CurrentHitPoints -= adjustedDamage;
+            this.CurrentHitPoints -= Math.Round(adjustedDamage, 3);
 
         }
         else
         {
-            this.CurrentHitPoints -= adjustedDamage;
+            this.CurrentHitPoints -= Math.Round(adjustedDamage, 3);
 
         }
         if (CurrentHitPoints < 0) { CurrentHitPoints = 0; }
-        Console.WriteLine($"{player.Name} dealt {Math.Round(adjustedDamage, 3)} damage to {Name}!\n{Name} HP: {Math.Round(CurrentHitPoints, 3)}/{MaximumHitPoints}\n{player.Name}, their hp is {Math.Round(player.CurrentHitPoints)}/{Player.MaximumHitPoints}");
+        Console.WriteLine($"{player.Name} dealt {Math.Round(adjustedDamage, 3)} damage to {Name}!\n{Name} HP: {Math.Round(CurrentHitPoints, 3)}/{MaximumHitPoints}\n{player.Name}, their hp is {Math.Round(player.CurrentHitPoints), 3}/{Player.MaximumHitPoints}");
     }
 
 

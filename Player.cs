@@ -28,12 +28,12 @@ public class Player
         int defenseRatio = RNG.Next(1, 6); // 1 = 100% damage, 5 = 60% damage
         double mitigation = (defenseRatio - 1) * 0.1;
         double damageTaken = damage * (1.0 - mitigation);
-        double hpLeft = CurrentHitPoints - damageTaken;
+        double hpLeft = CurrentHitPoints - Math.Round(damageTaken, 3);
         CurrentHitPoints = (hpLeft >= 0) ? hpLeft : 0;
         PrintStats();
         PrintCriticalHit(isCritical);
         if (CurrentHitPoints < 0) { CurrentHitPoints = 0; }
-        Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 3)} damage to {Name}!\n{Name} defended against {Math.Round(damage - damageTaken, 3)} Damage!\n{Name} HP: {CurrentHitPoints}/{MaximumHitPoints}");
+        Console.WriteLine($"{monster.Name} dealt {Math.Round(damage, 3)} damage to {Name}!\n{Name} defended against {Math.Round(damage - damageTaken, 3)} Damage!\n{Name} HP: {Math.Round(CurrentHitPoints, 3)}/{MaximumHitPoints}");
 
     }
     public void Defend()
