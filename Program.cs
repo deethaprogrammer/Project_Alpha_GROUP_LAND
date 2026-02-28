@@ -33,6 +33,7 @@ public class Program
         {
             Console.WriteLine("[q] Get quest.");
         }
+        Console.WriteLine("[a] QuestStats (here you can see all your completed and uncompleted quests)");
         RunOptions(player);
     }
     public static void RunOptions(Player player)
@@ -62,6 +63,9 @@ public class Program
                     player.CurrentLocation.QuestAvailableHere.StartQuest(player);
                     Console.Clear();
                     return;
+                case "a":
+                    player.QuestStat();
+                    return;
                 default:
                     Console.Clear();
                     Console.WriteLine("Make sure you press the right key");
@@ -88,7 +92,7 @@ public class Program
         Console.Clear();
         do
         {
-            Console.WriteLine("[1] Open your inventory.\n[2] Open your equipment\n[3] close inventory menu.");
+            Console.WriteLine("[1] Open your equipment inventory.\n[2] Open your equipment\n[3] Open item inventory.\n[4] Close your inventory menu");
             string input = Console.ReadLine()!;
             switch (input)
             {
@@ -99,6 +103,11 @@ public class Program
                     player.Inventory.equip_deEquip(player.Inventory.Equipped);
                     return;
                 case "3":
+                    Console.Clear();
+                    Console.WriteLine(player.Inventory.ViewNormalItems());
+                    World.ContinueMode();
+                    return;
+                case "4":
                     return;
                 default:
                     Console.Clear();

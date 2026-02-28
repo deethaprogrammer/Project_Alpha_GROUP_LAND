@@ -5,6 +5,7 @@ public static class World
     public static readonly List<Monster> Monsters = new List<Monster>();
     public static readonly List<Quest> Quests = new List<Quest>();
     public static readonly List<Location> Locations = new List<Location>();
+    public static readonly List<Item> Items = new List<Item>();
     public static readonly Random RandomGenerator = new Random();
 
     public const int WEAPON_ID_RUSTY_SWORD = 1;
@@ -39,7 +40,13 @@ public static class World
         PopulateLocations();
     }
 
-
+    public static Item HealingElixer = new("HealingElixer");
+    public static Item ProofBravery = new("Badge of Bravery");
+    public static void PopulateItems()
+    {
+        Items.Add(HealingElixer);
+        Items.Add(ProofBravery);
+    }
     public static void PopulateWeapons()
     {
         Weapons.Add(new Weapon(WEAPON_ID_RUSTY_SWORD, "Rusty sword", 5));
@@ -92,10 +99,10 @@ public static class World
                         "Kill 3 spiders in the spider forest");
 
         Quests.Add(clearAlchemistGarden);
-        Quests.Add(clearFarmersField);
-        Quests.Add(clearSpidersForest);
         Quests.Add(CompleteAlchemist);
+        Quests.Add(clearFarmersField);
         Quests.Add(CompleteFarmer);
+        Quests.Add(clearSpidersForest);
     }
 
     public static void PopulateLocations()
@@ -211,6 +218,17 @@ public static class World
         return null;
     }
 
+    public static Item ItemByName(string name)
+    {
+        foreach (Item item in Items)
+        {
+            if (item.Name == name)
+            {
+                return item;
+            }
+        }
+        return null;
+    }
     public static Quest QuestByID(int id)
     {
         foreach (Quest quest in Quests)

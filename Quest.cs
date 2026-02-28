@@ -55,7 +55,7 @@ public class Quest
             player.PrintStats();
             Console.WriteLine($"Monster: {target.Name} has {Math.Round(target.CurrentHitPoints, 3)}/{target.MaximumHitPoints} left.\n");
             if (Crit) { Console.WriteLine("you can attack with a critical\nPlease enter a new option"); }
-            Console.WriteLine("Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Flee.\n(Flee has a 75% chance to happen if player health is higher than the hit points of the enemy.)");
+            Console.WriteLine($"Only press the corresponding key\nWhat do you want to do?\n[1]Attack.\n[2]Boost Attack(Using MP)\n[3]Defend.\n[4]Heal with a potion you have: {World.HealingElixer.Count} Heal elixers.\n[5]Flee\n(Flee has a 75% chance to happen if player health is higher than the hit points of the enemy.)");
 
             string option = Console.ReadLine().Trim();
             string? answer = option switch
@@ -63,7 +63,8 @@ public class Quest
                 "1" => "attack",
                 "2" => "boost",
                 "3" => "defend",
-                "4" => "flee",
+                "4" => "heal",
+                "5" => "flee",
                 _ => null
             };
 
@@ -94,11 +95,33 @@ public class Quest
             {
                 playerCritical = player.IsCriticalHit();
                 if (!playerCritical) { Console.WriteLine("Not enough mp you need 50 mp"); }
+                World.ContinueMode();
             }
             else if (answer == "defend")
             {
                 player.Defend();
                 return null;
+            }
+            else if (answer == "heal")
+            {
+                if (World.HealingElixer.Count == 0)
+                {
+                    Console.WriteLine("You do not have any potions to use, Kill some mobs to have a chance to get it (30% on monster death)");
+                    World.ContinueMode();
+                }
+                else if (World.HealingElixer.Count > 0)
+                {
+                    player.Inventory.RemoveNormalItem(World.HealingElixer);
+                    double OldHitPoints = player.CurrentHitPoints;
+                    player.CurrentHitPoints += 15;
+                    if (player.CurrentHitPoints > Player.MaximumHitPoints)
+                    {
+                        player.CurrentHitPoints = Player.MaximumHitPoints;
+                    }
+                    Console.WriteLine($"Player used a Healing Elixer and has healed for: {Math.Round(player.CurrentHitPoints - OldHitPoints, 3)}HP");
+                    return null;
+                }
+
             }
             else if (answer == "flee")
             {
@@ -153,7 +176,7 @@ public class Quest
                 do
                 {
                     Console.Clear();
-                    Console.WriteLine($"Monster: {target.Name} has {Math.Round(target.CurrentHitPoints, 1)}/{target.MaximumHitPoints} left.\n");
+                    Console.WriteLine($"Monster: {target.Name} has {Math.Round(target.CurrentHitPoints, 1)}/{target.MaximumHitPoints} HP left.\n");
                     player.PrintStats();
                     if (DoActionplayer(player, target) != null)
                     {
@@ -171,6 +194,16 @@ public class Quest
                     }
 
                 } while (target.CurrentHitPoints > 0 && player.CurrentHitPoints > 0);
+                if (target.CurrentHitPoints == 0)
+                {
+                    Random rng = new Random();
+                    if (rng.Next(1, 11) <= 3)
+                    {
+                        Console.WriteLine($"{player.Name}, you have gotten an healing elixer (can be used in battle to heal for 15HP)");
+                        player.Inventory.AddNormalItem(World.HealingElixer);
+
+                    }
+                }
                 if (CurrentKills < KillsNeeded - 1 && target.CurrentHitPoints == 0)
                 {
                     Console.WriteLine("Do you want to continue fighting or will you be back later? y / n (press y or n after that press enter)");
@@ -190,25 +223,12 @@ public class Quest
                 IsStarted = false;
                 CurrentKills = 0;
                 if (this.NextQuest != null) { this.NextQuest.IsStarted = true; }
-                switch (ID)
-                {
-                    case 1:
-                        Console.WriteLine($"Great job\nI got great new for you.\n1. You have unlocked the following area: {World.LocationByID(World.LOCATION_ID_FARMHOUSE).Name}\nReturn to the Location where you accepted the Quest (see upper right corner for the details)");
-                        World.ContinueMode();
-                        World.LocationByID(World.LOCATION_ID_FARMHOUSE).Locked = false;
-                        break;
-                    case 2:
-                        Console.WriteLine($"Great job\nI got great new for you.\n1. You have unlocked the following area: {World.LocationByID(World.LOCATION_ID_BRIDGE).Name}\nReturn to the Location where you accepted the Quest (see upper right corner for the details)");
-                        World.ContinueMode();
-                        World.LocationByID(World.LOCATION_ID_BRIDGE).Locked = false;
-                        break;
-                }
             }
         }
     }
 
 
-    
+
     public void StartQuest(Player player)
     {
         Console.WriteLine($"Quest: {Name}");
@@ -226,6 +246,6 @@ public class Quest
     }
     public void WonGame()
     {
-        
+
     }
 }

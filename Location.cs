@@ -1,4 +1,5 @@
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 
 public class Location
@@ -12,6 +13,7 @@ public class Location
 
     public Player player;
     public bool Locked;
+
 
     public char LegendName;
     /* 
@@ -98,8 +100,8 @@ public class Location
         else if (QuestAvailableHere != null && QuestAvailableHere.IsCompleted && QuestAvailableHere.NextQuest.IsStarted)
         {
             Console.Clear();
-            Console.WriteLine($"Thank you for completing my Quest Take your reward:\n'You will get a {QuestAvailableHere.NextQuest.RewardWeapon.Name} Dealing: {QuestAvailableHere.NextQuest.RewardWeapon.MaximumDamage} as max damage'");
-
+            Console.WriteLine($"Thank you for completing my Quest Take your reward:\n'You will get a {QuestAvailableHere.NextQuest.RewardWeapon.Name} Dealing: {QuestAvailableHere.NextQuest.RewardWeapon.MaximumDamage} as max damage'\n'You will get a {World.ProofBravery.Name} (you need 2 bravery badges in order for the guard to let you pass)");
+            player.Inventory.AddNormalItem(World.ProofBravery);
             QuestAvailableHere.NextQuest.IsStarted = false;
             QuestAvailableHere.NextQuest.IsCompleted = true;
             if (QuestAvailableHere.NextQuest != null) { player.Inventory.AddItemToInventory(QuestAvailableHere.NextQuest.RewardWeapon); }
@@ -114,6 +116,32 @@ public class Location
         return null;
     }
 
+    public Location LocationLocked(Location movement)
+    {
+        if (movement.ID == World.LOCATION_ID_FARMHOUSE)
+        {
+            bool StillLocked = NonPlayableCharacters.UnkownRepairMan.PrintStory();
+            World.ContinueMode();
+            if (StillLocked)
+            {
+                return this;
+            }
+            movement.Locked = false;
+            return movement;
+        }
+        else if (movement.ID == World.LOCATION_ID_BRIDGE)
+        {
+            bool StillLocked = NonPlayableCharacters.Guard.PrintStory();
+            World.ContinueMode();
+            if (StillLocked)
+            {
+                return this;
+            }
+            movement.Locked = false;
+            return movement;
+        }
+        return movement;
+    }
     public Location Move(Player player)
     {
         while (true)
@@ -139,19 +167,25 @@ public class Location
 
             Location? moving = key switch
             {
-                ConsoleKey.N when LocationToNorth != null && !LocationToNorth.Locked => LocationToNorth,
-                ConsoleKey.E when LocationToEast != null && !LocationToEast.Locked => LocationToEast,
-                ConsoleKey.S when LocationToSouth != null && !LocationToSouth.Locked => LocationToSouth,
-                ConsoleKey.W when LocationToWest != null && !LocationToWest.Locked => LocationToWest,
+                ConsoleKey.N when LocationToNorth != null => LocationToNorth,
+                ConsoleKey.E when LocationToEast != null => LocationToEast,
+                ConsoleKey.S when LocationToSouth != null => LocationToSouth,
+                ConsoleKey.W when LocationToWest != null => LocationToWest,
                 ConsoleKey.R => this,
                 _ => null
             };
             if (moving != null)
             {
-                return moving;
+                if (!moving.Locked) { return moving; }
+                Console.Clear();
+                LocationLocked(moving);
+                Console.Clear();
             }
-            Console.Clear();
-            Console.WriteLine("This is not a valid movement or the Location is Locked (You miss one or more Quest or you miss a key item)");
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("This is not a valid key, pls chose one of the correct keys");
+            }
         }
 
 

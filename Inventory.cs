@@ -1,6 +1,7 @@
 public class Inventory
 {
     public readonly List<int> Unequipped = [], Equipped = [];
+    public readonly List<Item> Items = [];
     public Player Player;
     public Inventory(Player player) => Player = player;
     public bool ItemInInventory(Weapon item) => Unequipped.Contains(item.ID) || Equipped.Contains(item.ID);
@@ -37,7 +38,7 @@ public class Inventory
         if (inventory == Unequipped)
         {
             Console.WriteLine("What do you want to equip (If you do Not want to equip anything press r + enter, else press the number of the equipment\nif nothing is chosen (so enter) it will close like r does)");
-            Console.WriteLine(ViewItemsInInventory("inventory"));
+            Console.WriteLine(ViewItemsInInventory("unequipedequipment"));
             string input = Console.ReadLine()!.ToLower().Trim();
             bool Number = int.TryParse(input, out int number);
             if (input != "r" && !Number)
@@ -64,7 +65,7 @@ public class Inventory
         else if (inventory == Equipped)
         {
             Console.WriteLine("What do you want to unEquip (If you do Not want to unEquip anything press r + enter, else press the number of the equipment\nif nothing is chosen (so enter) it will close like r does)");
-            Console.WriteLine(ViewItemsInInventory("equipment"));
+            Console.WriteLine(ViewItemsInInventory("equipedequipment"));
             string input = Console.ReadLine()!.ToLower().Trim();
             bool Number = int.TryParse(input, out int number);
             if (input != "r" && !Number)
@@ -93,8 +94,8 @@ public class Inventory
     {
         List<int> inventory = inventoryType.ToLower() switch
         {
-            "inventory" => Unequipped,
-            "equipment" => Equipped,
+            "unequipedequipment" => Unequipped,
+            "equipedequipment" => Equipped,
             _ => throw new ArgumentException("Error: Invalid Inventory Type")
         };
         string start = $"Items in {inventoryType}:\n";
@@ -105,6 +106,38 @@ public class Inventory
         if (inventory.Count == 0) { start += "None"; }
         return start;
     }
+    public void AddNormalItem(Item item)
+    {
+        foreach (Item itemInvent in Items)
+        {
+            if (item == itemInvent)
+            {
+                item.Count++;
+                return;
+            }
+        }
+        item.Count++;
+        Items.Add(item);
+    }
+    public string ViewNormalItems()
+    {
+        string start = "Item from Normal inventory\n";
+        foreach (Item item in Items)
+        {
+            start += $"- {item.Name} Count: {item.Count}\n";
+        }
+        if (Items.Count == 0) { start += "None"; }
+        return start;
+    }
+    public void RemoveNormalItem(Item item)
+    {
+        item.Count--;
+        if (item.Count == 0)
+        {
+            Items.Remove(item);
+        }
+    }
+
     public void RemoveRandomItem()
     {
         int randomItemID = Unequipped[new Random().Next(Unequipped.Count)];

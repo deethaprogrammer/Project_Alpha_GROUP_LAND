@@ -138,4 +138,14 @@ public class Player
         Console.ReadLine();
         Environment.Exit(0);
     }
+    public void QuestStat()
+    {
+        Console.Clear();
+        foreach (Quest quest in quests)
+        {
+            Console.WriteLine($"- {quest.Description}: {(quest.IsCompleted? "Completed" : "Not yet completed")}.\n");
+        }
+        World.ContinueMode();
+        return;
+    }
 }
