@@ -50,7 +50,7 @@ public class Player
     }
     public bool IsCriticalHit()
     {
-        bool isCritical = CurrentMagicPoints > 50;
+        bool isCritical = CurrentMagicPoints >= 50;
         if (isCritical) { CurrentMagicPoints -= 50; }
         return isCritical;
     }

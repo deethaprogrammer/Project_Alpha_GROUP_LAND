@@ -65,6 +65,7 @@ public class Program
                     return;
                 case "a":
                     player.QuestStat();
+                    Console.Clear();
                     return;
                 default:
                     Console.Clear();
